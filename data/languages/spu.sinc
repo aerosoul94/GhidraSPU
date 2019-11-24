@@ -245,12 +245,10 @@ define pcodeop __spu_ila;
 {
 }
 
-define pcodeop __spu_ai;
-
 # ai rt,ra,value
 :ai RI10_RT,RI10_RA,RI10_I10 is RI10_OP=28 & RI10_RT & RI10_RA & RI10_I10
 {
-    RI10_RT = __spu_ai(RI10_RA,RI10_I10:4);
+	RI10_RT = RI10_RA + RI10_I10;
 }
 
 # sfh rt,ra,rb
@@ -473,6 +471,7 @@ define pcodeop __spu_ai;
 {
 }
 
+# lr rt,ra
 :lr RI10_RT,RI10_RA is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10=0
 {
     RI10_RT = RI10_RA;
