@@ -1,6 +1,0 @@
-<opinions>
-    <constraint load="Executable and Linking Format (ELF)" compilerSpecID="default">
-        <constraint primary="23" secondary="0" processor="SPU" size="128"/>
-    </constraint>
-<opinions>
- 
