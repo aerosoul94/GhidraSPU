@@ -94,7 +94,8 @@ attach variables [
 #LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:8 = (symbol + RI10_RA) & 0xFFFFFFF0;export tmp; }
 LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:8 = symbol + RI10_RA;export tmp; }
 targetAddress: symbol   is RI16_I16 [ symbol = inst_start + (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
-loadAddress: symbol     is RI18_I18 [ symbol = RI18_I18*1; ] { export *[ram]:4 symbol; }
+absoluteAddress: symbol   is RI16_I16 [ symbol = (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
+loadAddress: symbol     is RI18_I18 [ symbol = RI18_I18*1; ] { export *[ram]:8 symbol; }
 
 #
 ## Memory Load/Store Instructions
@@ -212,37 +213,52 @@ define pcodeop __spu_cdx;
 ## Constant-Formation Instructions
 #
 
+define pcodeop __spu_ilh;
+
 # ilh rt,symbol
 :ilh RI16_RT,RI16_I16 is RI16_OP=131 & RI16_I16 & RI16_RT
 {
+    RI16_RT = __spu_ilh(RI16_RT,RI16_I16:4);
 }
+
+define pcodeop __spu_ilhu;
 
 # ilhu rt,symbol
 :ilhu RI16_RT,RI16_I16 is RI16_OP=130 & RI16_I16 & RI16_RT
 {
+    RI16_RT = __spu_ilhu(RI16_RT,RI16_I16:4);
 }
+
+define pcodeop __spu_il;
 
 # il rt,symbol
 :il RI16_RT,RI16_I16 is RI16_OP=129 & RI16_I16 & RI16_RT
 {
+    RI16_RT = RI16_I16;
 }
 
 define pcodeop __spu_ila;
 
 # ila rt,symbol
-:ila RI18_RT,loadAddress is RI18_OP=33 & RI18_RT & loadAddress
+:ila RI18_RT,RI18_I18 is RI18_OP=33 & RI18_RT & RI18_I18
 {
-    #RI18_RT = __spu_ila(RI18_I18:4);
+    RI18_RT = RI18_I18;
 }
+
+define pcodeop __spu_iohl;
 
 # iohl rt,symbol
 :iohl RI16_RT,RI16_I16 is RI16_OP=193 & RI16_I16 & RI16_RT
 {
+    RI16_RT = __spu_iohl(RI16_RT,RI16_I16:4);
 }
+
+define pcodeop __spu_fsmbi;
 
 # fsmbi rt,symbol
 :fsmbi RI16_RT,RI16_I16 is RI16_OP=101 & RI16_I16 & RI16_RT
 {
+    RI16_RT = __spu_fsmbi(RI16_RT,RI16_I16:4);
 }
 
 
@@ -865,9 +881,10 @@ define pcodeop __spu_rotqby;
 }
 
 # brasl rt,symbol
-:brasl RI16_RT,targetAddress is RI16_OP=98 & RI16_I16 & RI16_RT & targetAddress
+:brasl RI16_RT,absoluteAddress is RI16_OP=98 & RI16_I16 & RI16_RT & absoluteAddress
 {
-    call targetAddress;
+    RI16_RT = inst_next;
+    call absoluteAddress;
 }
 
 # bi lr
