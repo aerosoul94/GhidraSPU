@@ -1,6 +1,6 @@
 # Main slaspec must define endianess and alignment
 
-define space ram type=ram_space size=4 default;
+define space ram type=ram_space size=8 default;
 define space register type=register_space size=8;
 
 define register offset=0 size=8 [
@@ -90,6 +90,8 @@ attach variables [
     r120 r121 r122 r123 r124 r125 r126 r127
 ];
 
+# we know that the LSA must be 16 bytes aligned, but it f*s up the decompiler output
+#LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:8 = (symbol + RI10_RA) & 0xFFFFFFF0;export tmp; }
 LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:8 = symbol + RI10_RA;export tmp; }
 targetAddress: symbol   is RI16_I16 [ symbol = inst_start + (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
 loadAddress: symbol     is RI18_I18 [ symbol = RI18_I18*1; ] { export *[ram]:4 symbol; }
@@ -98,12 +100,10 @@ loadAddress: symbol     is RI18_I18 [ symbol = RI18_I18*1; ] { export *[ram]:4 s
 ## Memory Load/Store Instructions
 #
 
-define pcodeop __spu_lqd;
-
 # lqd rt,symbol(ra)
 :lqd RI10_RT,LSA is RI10_OP=52 & RI10_RT & RI10_I10 & RI10_RA & LSA
 {
-    RI10_RT = __spu_lqd(RI10_RA,RI10_I10:4);
+    RI10_RT = *[ram] LSA;
 }
 
 define pcodeop __spu_lqx;
@@ -133,6 +133,7 @@ define pcodeop __spu_lqr;
 # stqd rt,symbol(ra)
 :stqd RI10_RT,LSA is RI10_OP=36 & RI10_RT & RI10_I10 & RI10_RA & LSA
 {
+    *[ram] LSA = RI10_RT;
 }
 
 # stqx rt,ra,rb
