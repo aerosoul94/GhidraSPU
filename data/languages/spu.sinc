@@ -850,6 +850,12 @@ define pcodeop __spu_rotqby;
     call targetAddress;
 }
 
+# bi lr
+:bi RR_RA is RR_OP=424 & RR_RB & RR_RA & RR_RA=0 & RR_RT=0
+{
+    return [RR_RA];
+}
+
 # bi ra
 :bi RR_RA is RR_OP=424 & RR_RB & RR_RA & RR_RT=0
 {
