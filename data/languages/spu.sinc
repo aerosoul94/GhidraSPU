@@ -95,7 +95,7 @@ attach variables [
 LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:8 = symbol + RI10_RA;export tmp; }
 targetAddress: symbol   is RI16_I16 [ symbol = inst_start + (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
 absoluteAddress: symbol   is RI16_I16 [ symbol = (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
-loadAddress: symbol     is RI18_I18 [ symbol = RI18_I18*1; ] { export *[ram]:8 symbol; }
+#loadAddress: symbol     is RI18_I18 [ symbol = RI18_I18*1; ] { export *[ram]:8 symbol; }
 
 #
 ## Memory Load/Store Instructions
@@ -269,57 +269,73 @@ define pcodeop __spu_fsmbi;
 # ah rt,ra,rb
 :ah RR_RT,RR_RA,RR_RB is RR_OP=200 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = (RR_RA + RR_RB) & 0xFFFF;
 }
 
 # ahi rt,ra,value
 :ahi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=29 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = (RI10_RA + RI10_I10) & 0xFFFF;
 }
 
 # a rt,ra,rb
 :a RR_RT,RR_RA,RR_RB is RR_OP=192 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = (RR_RA + RR_RB) & 0xFFFFFFFF;
 }
 
 # ai rt,ra,value
 :ai RI10_RT,RI10_RA,RI10_I10 is RI10_OP=28 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = RI10_RA + RI10_I10;
+	RI10_RT = (RI10_RA + RI10_I10) & 0xFFFFFFFF;
 }
 
 # sfh rt,ra,rb
 :sfh RR_RT,RR_RA,RR_RB is RR_OP=72 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = (RR_RA - RR_RB) & 0xFFFF;
 }
 
 # sfhi rt,ra,value
 :sfhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=13 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = (RI10_RA - RI10_I10) & 0xFFFF;
 }
 
 # sf rt,ra,rb
 :sf RR_RT,RR_RA,RR_RB is RR_OP=64 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = (RR_RA - RR_RB) & 0xFFFFFFFF;
 }
 
 # sfi rt,ra,value
 :sfi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=12 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = (RI10_RA - RI10_I10) & 0xFFFFFFFF;
 }
+
+define pcodeop __spu_addx;
 
 # addx rt,ra,rb
 :addx RR_RT,RR_RA,RR_RB is RR_OP=832 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_addx(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_cg;
 
 # cg rt,ra,rb
 :cg RR_RT,RR_RA,RR_RB is RR_OP=194 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_cg(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_cgx;
 
 # cgx rt,ra,rb
 :cgx RR_RT,RR_RA,RR_RB is RR_OP=834 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_cgx(RR_RA, RR_RB);
 }
 
 # sfx rt,ra,rb
@@ -465,103 +481,127 @@ define pcodeop __spu_fsmbi;
 # and rt,ra,rb
 :and RR_RT,RR_RA,RR_RB is RR_OP=193 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = RR_RA & RR_RB;
 }
 
 # andc rt,ra,rb
 :andc RR_RT,RR_RA,RR_RB is RR_OP=705 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = RR_RA & (~RR_RB);
 }
 
 # andbi rt,ra,value
+# TODO: IS THIS IMPLEMENTATION RIGHT?
 :andbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=22 & RI10_RT & RI10_RA & RI10_I10
 {
+	b:8 = RI10_I10 & 0xFF;
+	bbbb:8 = b << 24 | b << 16 | b << 8 | b;
+	RI10_RT = RI10_RA & bbbb;
 }
 
 # andhi rt,ra,value
 :andhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=21 & RI10_RT & RI10_RA & RI10_I10
 {
+    RI10_RT = (RI10_RA & RI10_I10) & 0xFFFF;
 }
 
 # andi rt,ra,value
 :andi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=20 & RI10_RT & RI10_RA & RI10_I10
 {
+    RI10_RT = (RI10_RA & RI10_I10) & 0xFFFFFFFF;
 }
 
 # or rt,ra,rb
 :or RR_RT,RR_RA,RR_RB is RR_OP=65 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = RR_RA | RR_RB;
 }
 
 # orc rt,ra,rb
 :orc RR_RT,RR_RA,RR_RB is RR_OP=713 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = RR_RA | (~RR_RB);
 }
 
 # orbi rt,ra,value
+# TODO: IS THIS IMPLEMENTATION RIGHT?
 :orbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=6 & RI10_RT & RI10_RA & RI10_I10
 {
+	b:8 = RI10_I10 & 0xFF;
+	bbbb:8 = b << 24 | b << 16 | b << 8 | b;
+	RI10_RT = RI10_RA | bbbb;
 }
 
 # orhi rt,ra,value
 :orhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=5 & RI10_RT & RI10_RA & RI10_I10
 {
+    RI10_RT = (RI10_RA | RI10_I10) & 0xFFFF;
 }
 
 # lr rt,ra
 :lr RI10_RT,RI10_RA is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10=0
 {
-    RI10_RT = RI10_RA;
+    RI10_RT = RI10_RA & 0xFFFFFFFF;
 }
 
 # ori rt,ra,value
 :ori RI10_RT,RI10_RA,RI10_I10 is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = RI10_RA | RI10_I10;
+	RI10_RT = (RI10_RA | RI10_I10) & 0xFFFFFFFF;
 }
 
 # orx rt,ra
 :orx RR_RT,RR_RA is RR_OP=496 & RR_RB=0 & RR_RA & RR_RT
 {
+	RR_RT = (RR_RA | (RR_RA >> 32) | (RR_RA >> 64) | (RR_RA >> 96)) & 0xFFFFFFFF;
 }
 
 # xor rt,ra,rb
 :xor RR_RT,RR_RA,RR_RB is RR_OP=577 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = RR_RA ^ RR_RB;
 }
 
 # xorbi rt,ra,value
 :xorbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=70 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = (RI10_RA ^ RI10_I10) & 0xFF;
 }
 
 # xorhi rt,ra,value
 :xorhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=69 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = (RI10_RA ^ RI10_I10) & 0xFFFF;
 }
 
 # xori rt,ra,value
 :xori RI10_RT,RI10_RA,RI10_I10 is RI10_OP=68 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = (RI10_RA ^ RI10_I10) & 0xFFFFFFFF;
 }
 
 # nand rt,ra,rb
 :nand RR_RT,RR_RA,RR_RB is RR_OP=201 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = ~(RR_RA & RR_RB);
 }
 
 # nor rt,ra,rb
 :nor RR_RT,RR_RA,RR_RB is RR_OP=73 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = ~(RR_RA | RR_RB);
 }
 
 # eqv rt,ra,rb
 :eqv RR_RT,RR_RA,RR_RB is RR_OP=585 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = RR_RA ^ (~RR_RB);
 }
 
 # selb rt,ra,rb,rc
 :selb RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=8 & RRR_RT & RRR_RB & RRR_RA & RRR_RC
 {
+	RRR_RT = (RRR_RC & RRR_RB) | ((~RRR_RC) & RRR_RA);
 }
 
 define pcodeop __spu_shufb;
