@@ -1,0 +1,954 @@
+ 
+define endian=big;
+define alignment=4;
+
+define space ram type=ram_space size=4 default;
+define space register type=register_space size=8;
+
+define register offset=0 size=8 [
+    r0 r1 r2 r3 r4 r5 r6 r7 r8 r9
+    r10 r11 r12 r13 r14 r15 r16 r17 r18 r19
+    r20 r21 r22 r23 r24 r25 r26 r27 r28 r29
+    r30 r31 r32 r33 r34 r35 r36 r37 r38 r39
+    r40 r41 r42 r43 r44 r45 r46 r47 r48 r49
+    r50 r51 r52 r53 r54 r55 r56 r57 r58 r59
+    r60 r61 r62 r63 r64 r65 r66 r67 r68 r69
+    r70 r71 r72 r73 r74 r75 r76 r77 r78 r79
+    r80 r81 r82 r83 r84 r85 r86 r87 r88 r89
+    r90 r91 r92 r93 r94 r95 r96 r97 r98 r99
+    r100 r101 r102 r103 r104 r105 r106 r107 r108 r109
+    r110 r111 r112 r113 r114 r115 r116 r117 r118 r119
+    r120 r121 r122 r123 r124 r125 r126 r127
+];
+
+define register offset=0x400 size=8 pc;
+
+define token instr(32)
+    RR_OP=(21,31)
+    RR_RB=(14,20)
+    RR_RA=(7,13)
+    RR_RT=(0,6)
+    
+    RRR_OP=(28,31)
+    RRR_RT=(21,27)
+    RRR_RB=(14,20)
+    RRR_RA=(7,13)
+    RRR_RC=(0,6)
+    
+    RI7_OP=(21,31)
+    RI7_I7=(14,19) signed
+    RI7_RA=(7,13)
+    RI7_RT=(0,6)
+    
+    RI10_OP=(24,31)
+    RI10_I10=(14,23) signed
+    RI10_RA=(7,13)
+    RI10_RT=(0,6)
+    
+    RI16_OP=(23,31)
+    RI16_I16=(7,22) signed
+    RI16_RT=(0,6)
+    
+    HBR_OP=(21,31)
+    HBR_P=(20,20)
+    HBR_0=(16,19)
+    HBR_ROH=(14,15)
+    HBR_RA=(7,13)
+    HBR_ROL=(0,6)
+    
+    HBRA_OP=(25,31)
+    HBRA_R0H=(23,24)
+    HBRA_I16=(7,22) signed
+    HBRA_R0L=(0,6)
+    
+    RI18_OP=(25,31)
+    RI18_I18=(7,24) signed
+    RI18_RT=(0,6)
+;
+
+attach variables [
+    RR_RB RR_RA RR_RT
+    RRR_RT RRR_RB RRR_RA RRR_RC
+    RI7_RA RI7_RT
+    RI10_RA RI10_RT
+    RI16_RT
+    RI18_RT
+]
+[
+    r0 r1 r2 r3 r4 r5 r6 r7 r8 r9
+    r10 r11 r12 r13 r14 r15 r16 r17 r18 r19
+    r20 r21 r22 r23 r24 r25 r26 r27 r28 r29
+    r30 r31 r32 r33 r34 r35 r36 r37 r38 r39
+    r40 r41 r42 r43 r44 r45 r46 r47 r48 r49
+    r50 r51 r52 r53 r54 r55 r56 r57 r58 r59
+    r60 r61 r62 r63 r64 r65 r66 r67 r68 r69
+    r70 r71 r72 r73 r74 r75 r76 r77 r78 r79
+    r80 r81 r82 r83 r84 r85 r86 r87 r88 r89
+    r90 r91 r92 r93 r94 r95 r96 r97 r98 r99
+    r100 r101 r102 r103 r104 r105 r106 r107 r108 r109
+    r110 r111 r112 r113 r114 r115 r116 r117 r118 r119
+    r120 r121 r122 r123 r124 r125 r126 r127
+];
+
+LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:8 = symbol + RI10_RA;export tmp; }
+targetAddress: symbol   is RI16_I16 [ symbol = inst_start + (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
+loadAddress: symbol     is RI18_I18 [ symbol = RI18_I18*1; ] { export *[ram]:4 symbol; }
+
+#
+## Memory Load/Store Instructions
+#
+
+define pcodeop __spu_lqd;
+
+# lqd rt,symbol(ra)
+:lqd RI10_RT,LSA is RI10_OP=52 & RI10_RT & RI10_I10 & RI10_RA & LSA
+{
+    RI10_RT = __spu_lqd(RI10_RA,RI10_I10:4);
+}
+
+define pcodeop __spu_lqx;
+
+# lqx rt,ra,rb
+:lqx RR_RT,RR_RA,RR_RB is RR_OP=452 & RR_RT & RR_RA & RR_RB
+{
+    RR_RT = __spu_lqx(RR_RA,RR_RB);
+}
+
+define pcodeop __spu_lqa;
+
+# lqa rt,symbol
+:lqa RI16_RT,RI16_I16 is RI16_OP=97 & RI16_RT & RI16_I16
+{
+    RI16_RT = __spu_lqa(RI16_I16:4);
+}
+
+define pcodeop __spu_lqr;
+
+# lqr rt,symbol
+:lqr RI16_RT,RI16_I16 is RI16_OP=103 & RI16_RT & RI16_I16
+{
+    RI16_RT = __spu_lqr(RI16_I16:4);
+}
+
+# stqd rt,symbol(ra)
+:stqd RI10_RT,LSA is RI10_OP=36 & RI10_RT & RI10_I10 & RI10_RA & LSA
+{
+}
+
+# stqx rt,ra,rb
+:stqx RR_RT,RR_RA,RR_RB is RR_OP=324 & RR_RB & RR_RA & RR_RT
+{
+}
+
+define pcodeop __spu_stqa;
+
+# stqa rt,symbol
+:stqa RI16_RT,RI16_I16 is RI16_OP=65 & RI16_I16 & RI16_RT
+{
+    __spu_stqa(RI16_RT,RI16_I16:4);
+}
+
+# stqr rt,symbol
+:stqr RI16_RT,RI16_I16 is RI16_OP=71 & RI16_I16 & RI16_RT
+{
+}
+
+define pcodeop __spu_cbd;
+
+# cbd rt,symbol(ra)
+:cbd RI7_RT,RI7_I7(RI7_RA) is RI7_OP=500 & RI7_I7 & RI7_RA & RI7_RT
+{
+    RI7_RT = __spu_cbd(RI7_RA,RI7_I7:4);
+}
+
+# cbx rt,ra,rb
+:cbx RR_RT,RR_RA,RR_RB is RR_OP=468 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# cwd rt,symbol(ra)
+:cwd RI7_RT,RI7_I7(RI7_RA) is RI7_OP=502 & RI7_I7 & RI7_RA & RI7_RT
+{
+}
+
+# cwx rt,ra,rb
+:cwx RR_RT,RR_RA,RR_RB is RR_OP=470 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# cdd rt,symbol(ra)
+:cdd RI7_RT,RI7_I7(RI7_RA) is RI7_OP=503 & RI7_I7 & RI7_RA & RI7_RT
+{
+}
+
+# cdx rt,ra,rb
+:cdx RR_RT,RR_RA,RR_RB is RR_OP=471 & RR_RB & RR_RA & RR_RT
+{
+}
+
+
+
+#
+## Constant-Formation Instructions
+#
+
+# ilh rt,symbol
+:ilh RI16_RT,RI16_I16 is RI16_OP=131 & RI16_I16 & RI16_RT
+{
+}
+
+# ilhu rt,symbol
+:ilhu RI16_RT,RI16_I16 is RI16_OP=130 & RI16_I16 & RI16_RT
+{
+}
+
+# il rt,symbol
+:il RI16_RT,RI16_I16 is RI16_OP=129 & RI16_I16 & RI16_RT
+{
+}
+
+define pcodeop __spu_ila;
+
+# ila rt,symbol
+:ila RI18_RT,loadAddress is RI18_OP=33 & RI18_RT & loadAddress
+{
+    #RI18_RT = __spu_ila(RI18_I18:4);
+}
+
+# iohl rt,symbol
+:iohl RI16_RT,RI16_I16 is RI16_OP=193 & RI16_I16 & RI16_RT
+{
+}
+
+# fsmbi rt,symbol
+:fsmbi RI16_RT,RI16_I16 is RI16_OP=101 & RI16_I16 & RI16_RT
+{
+}
+
+
+#
+## Integer and Logical Instructions
+#
+
+# ah rt,ra,rb
+:ah RR_RT,RR_RA,RR_RB is RR_OP=200 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# ahi rt,ra,value
+:ahi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=29 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# a rt,ra,rb
+:a RR_RT,RR_RA,RR_RB is RR_OP=192 & RR_RT & RR_RA & RR_RB
+{
+}
+
+define pcodeop __spu_ai;
+
+# ai rt,ra,value
+:ai RI10_RT,RI10_RA,RI10_I10 is RI10_OP=28 & RI10_RT & RI10_RA & RI10_I10
+{
+    RI10_RT = __spu_ai(RI10_RA,RI10_I10:4);
+}
+
+# sfh rt,ra,rb
+:sfh RR_RT,RR_RA,RR_RB is RR_OP=72 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# sfhi rt,ra,value
+:sfhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=13 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# sf rt,ra,rb
+:sf RR_RT,RR_RA,RR_RB is RR_OP=64 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# sfi rt,ra,value
+:sfi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=12 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# addx rt,ra,rb
+:addx RR_RT,RR_RA,RR_RB is RR_OP=832 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# cg rt,ra,rb
+:cg RR_RT,RR_RA,RR_RB is RR_OP=194 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# cgx rt,ra,rb
+:cgx RR_RT,RR_RA,RR_RB is RR_OP=834 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# sfx rt,ra,rb
+:sfx RR_RT,RR_RA,RR_RB is RR_OP=833 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# bg rt,ra,rb
+:bg RR_RT,RR_RA,RR_RB is RR_OP=66 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# bgx rt,ra,rb
+:bgx RR_RT,RR_RA,RR_RB is RR_OP=835 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# mpy rt,ra,rb
+:mpy RR_RT,RR_RA,RR_RB is RR_OP=964 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# mpyu rt,ra,rb
+:mpyu RR_RT,RR_RA,RR_RB is RR_OP=972 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# mpyi rt,ra,value
+:mpyi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=116 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# mpyui rt,ra,value
+:mpyui RI10_RT,RI10_RA,RI10_I10 is RI10_OP=117 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# mpya rt,ra,rb,rc
+:mpya RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=12 & RRR_RT & RRR_RB & RRR_RA & RRR_RC
+{
+}
+
+# mpyh rt,ra,rb
+:mpyh RR_RT,RR_RA,RR_RB is RR_OP=965 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# mpyh rt,ra,rb
+:mpyh RR_RT,RR_RA,RR_RB is RR_OP=967 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# mpyhh rt,ra,rb
+:mpyhh RR_RT,RR_RA,RR_RB is RR_OP=966 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# mpyhha rt,ra,rb
+:mpyhha RR_RT,RR_RA,RR_RB is RR_OP=838 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# mpyhhu rt,ra,rb
+:mpyhhu RR_RT,RR_RA,RR_RB is RR_OP=974 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# mpyhhau rt,ra,rb
+:mpyhhau RR_RT,RR_RA,RR_RB is RR_OP=846 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# clz rt,ra
+:clz RI7_RT,RI7_RA is RI7_OP=677 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# cntb rt,ra
+:cntb RI7_RT,RI7_RA is RI7_OP=692 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# fsmb rt,ra
+:fsmb RI7_RT,RI7_RA is RI7_OP=438 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# fsmh rt,ra
+:fsmh RI7_RT,RI7_RA is RI7_OP=437 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# fsm rt,ra
+:fsm RI7_RT,RI7_RA is RI7_OP=436 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# gbb rt,ra
+:gbb RI7_RT,RI7_RA is RI7_OP=434 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# gbh rt,ra
+:gbh RI7_RT,RI7_RA is RI7_OP=433 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# gb rt,ra
+:gb RI7_RT,RI7_RA is RI7_OP=432 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# avgb rt,ra,rb
+:avgb RR_RT,RR_RA,RR_RB is RR_OP=211 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# absdb rt,ra,rb
+:absdb RR_RT,RR_RA,RR_RB is RR_OP=83 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# sumb rt,ra,rb
+:sumb RR_RT,RR_RA,RR_RB is RR_OP=595 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# xsbh rt,ra
+:xsbh RR_RT,RR_RA is RR_OP=694 & RR_RB=0 & RR_RA & RR_RT
+{
+}
+
+# xshw rt,ra
+:xshw RR_RT,RR_RA is RR_OP=686 & RR_RB=0 & RR_RA & RR_RT
+{
+}
+
+# xswd rt,ra
+:xswd RR_RT,RR_RA is RR_OP=678 & RR_RB=0 & RR_RA & RR_RT
+{
+}
+
+# and rt,ra,rb
+:and RR_RT,RR_RA,RR_RB is RR_OP=193 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# andc rt,ra,rb
+:andc RR_RT,RR_RA,RR_RB is RR_OP=705 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# andbi rt,ra,value
+:andbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=22 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# andhi rt,ra,value
+:andhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=21 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# andi rt,ra,value
+:andi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=20 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# or rt,ra,rb
+:or RR_RT,RR_RA,RR_RB is RR_OP=65 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# orc rt,ra,rb
+:orc RR_RT,RR_RA,RR_RB is RR_OP=713 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# orbi rt,ra,value
+:orbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=6 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# orhi rt,ra,value
+:orhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=5 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+define pcodeop __spu_ori;
+
+# ori rt,ra,value
+:ori RI10_RT,RI10_RA,RI10_I10 is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10
+{
+    RI10_RT = __spu_ori(RI10_RA,RI10_I10:4);
+}
+
+# orx rt,ra
+:orx RR_RT,RR_RA is RR_OP=496 & RR_RB=0 & RR_RA & RR_RT
+{
+}
+
+# xor rt,ra,rb
+:xor RR_RT,RR_RA,RR_RB is RR_OP=577 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# xorbi rt,ra,value
+:xorbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=70 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# xorhi rt,ra,value
+:xorhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=69 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# xori rt,ra,value
+:xori RI10_RT,RI10_RA,RI10_I10 is RI10_OP=68 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# nand rt,ra,rb
+:nand RR_RT,RR_RA,RR_RB is RR_OP=201 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# nor rt,ra,rb
+:nor RR_RT,RR_RA,RR_RB is RR_OP=73 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# eqv rt,ra,rb
+:eqv RR_RT,RR_RA,RR_RB is RR_OP=585 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# selb rt,ra,rb,rc
+:selb RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=8 & RRR_RT & RRR_RB & RRR_RA & RRR_RC
+{
+}
+
+define pcodeop __spu_shufb;
+
+# shufb rt,ra,rb,rc
+:shufb RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=11 & RRR_RT & RRR_RB & RRR_RA & RRR_RC
+{
+    RRR_RT = __spu_shufb(RRR_RA,RRR_RB,RRR_RC);
+}
+
+
+#
+## Shift and Rotate Instructions
+#
+
+# shlh rt,ra,rb
+:shlh RR_RT,RR_RA,RR_RB is RR_OP=95 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# shlhi rt,ra,rb
+:shlhi RR_RT,RR_RA,RR_RB is RR_OP=127 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# shl rt,ra,rb
+:shl RR_RT,RR_RA,RR_RB is RR_OP=91 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# shli rt,ra,value
+:shli RI7_RT,RI7_RA,RI7_I7 is RI7_OP=123 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# shlqbi rt,ra,rb
+:shlqbi RR_RT,RR_RA,RR_RB is RR_OP=475 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# shlqbii rt,ra,value
+:shlqbii RI7_RT,RI7_RA,RI7_I7 is RI7_OP=507 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# shlqby rt,ra,rb
+:shlqby RR_RT,RR_RA,RR_RB is RR_OP=479 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# shlqbyi rt,ra,value
+:shlqbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=511 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# shlqbybi rt,ra,rb
+:shlqbybi RR_RT,RR_RA,RR_RB is RR_OP=463 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# roth rt,ra,rb
+:roth RR_RT,RR_RA,RR_RB is RR_OP=92 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rothi rt,ra,value
+:rothi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=124 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rot rt,ra,rb
+:rot RR_RT,RR_RA,RR_RB is RR_OP=88 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# roti rt,ra,value
+:roti RI7_RT,RI7_RA,RI7_I7 is RI7_OP=120 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+define pcodeop __spu_rotqby;
+
+# rotqby rt,ra,rb
+:rotqby RR_RT,RR_RA,RR_RB is RR_OP=476 & RR_RT & RR_RA & RR_RB
+{
+    RR_RT = __spu_rotqby(RR_RA,RR_RB);
+}
+
+# rotqbyi rt,ra,value
+:rotqbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=508 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rotqbybi rt,ra,rb
+:rotqbybi RR_RT,RR_RA,RR_RB is RR_OP=460 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rotqbi rt,ra,value
+:rotqbi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=472 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rotqbii rt,ra,rb
+:rotqbii RR_RT,RR_RA,RR_RB is RR_OP=504 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rothm rt,ra,rb
+:rothm RR_RT,RR_RA,RR_RB is RR_OP=93 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rothmi rt,ra,value
+:rothmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=125 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rotm rt,ra,rb
+:rotm RR_RT,RR_RA,RR_RB is RR_OP=89 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rotmi rt,ra,value
+:rotmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=121 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rotqmby rt,ra,rb
+:rotqmby RR_RT,RR_RA,RR_RB is RR_OP=477 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rotqmbyi rt,ra,value
+:rotqmbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=509 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rotqmbybi rt,ra,rb
+:rotqmbybi RR_RT,RR_RA,RR_RB is RR_OP=461 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rotqmbi rt,ra,value
+:rotqmbi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=473 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rotqmbii rt,ra,value
+:rotqmbii RI7_RT,RI7_RA,RI7_I7 is RI7_OP=505 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rotmah rt,ra,rb
+:rotmah RR_RT,RR_RA,RR_RB is RR_OP=94 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rotmahi rt,ra,value
+:rotmahi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=126 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+# rotma rt,ra,rb
+:rotma RR_RT,RR_RA,RR_RB is RR_OP=90 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# rotmai rt,ra,value
+:rotmai RI7_RT,RI7_RA,RI7_I7 is RI7_OP=122 & RI7_RT & RI7_RA & RI7_I7
+{
+}
+
+
+
+#
+## Compare, Branch, and Halt Instructions
+#
+
+# heq ra,rb
+:heq RR_RA,RR_RB is RR_OP=984 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# heqi ra,value
+:heqi RI10_RA,RI10_I10 is RI10_OP=127 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# hgt ra,rb
+:hgt RR_RA,RR_RB is RR_OP=600 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# hgti ra,value
+:hgti RI10_RA,RI10_I10 is RI10_OP=79 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# hlgt ra,rb
+:hlgt RR_RA,RR_RB is RR_OP=728 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# hlgti ra,value
+:hlgti RI10_RA,RI10_I10 is RI10_OP=95 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# ceqb rt,ra,rb
+:ceqb RR_RT,RR_RA,RR_RB is RR_OP=976 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# ceqbi rt,ra,value
+:ceqbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=126 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# ceqh rt,ra,rb
+:ceqh RR_RT,RR_RA,RR_RB is RR_OP=968 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# ceqhi rt,ra,value
+:ceqhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=125 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# ceq rt,ra,rb
+:ceq RR_RT,RR_RA,RR_RB is RR_OP=960 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# ceqi rt,ra,value
+:ceqi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=124 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# cgtb rt,ra,rb
+:cgtb RR_RT,RR_RA,RR_RB is RR_OP=592 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# cgtbi rt,ra,value
+:cgtbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=78 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# cgth rt,ra,rb
+:cgth RR_RT,RR_RA,RR_RB is RR_OP=584 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# cgthi rt,ra,value
+:cgthi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=115 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# cgt rt,ra,rb
+:cgt RR_RT,RR_RA,RR_RB is RR_OP=576 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# cgti rt,ra,value
+:cgti RI10_RT,RI10_RA,RI10_I10 is RI10_OP=76 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# clgtb rt,ra,rb
+:clgtb RR_RT,RR_RA,RR_RB is RR_OP=720 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# clgtbi rt,ra,value
+:clgtbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=94 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# clgth rt,ra,rb
+:clgth RR_RT,RR_RA,RR_RB is RR_OP=712 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# clgthi rt,ra,value
+:clgthi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=93 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+# clgt rt,ra,rb
+:clgt RR_RT,RR_RA,RR_RB is RR_OP=704 & RR_RT & RR_RA & RR_RB
+{
+}
+
+# clgti rt,ra,value
+:clgti RI10_RT,RI10_RA,RI10_I10 is RI10_OP=92 & RI10_RT & RI10_RA & RI10_I10
+{
+}
+
+
+
+# br symbol
+:br targetAddress is RI16_OP=100 & RI16_I16 & RI16_RT=0 & targetAddress
+{
+    goto targetAddress;
+}
+
+# bra symbol
+:bra targetAddress is RI16_OP=96 & RI16_I16 & RI16_RT=0 & targetAddress
+{
+    goto targetAddress;
+}
+
+# brsl rt,symbol
+:brsl RI16_RT,targetAddress is RI16_OP=102 & RI16_I16 & RI16_RT & targetAddress
+{
+    RI16_RT = inst_next;
+    call targetAddress;
+}
+
+# brasl rt,symbol
+:brasl RI16_RT,targetAddress is RI16_OP=98 & RI16_I16 & RI16_RT & targetAddress
+{
+    call targetAddress;
+}
+
+# bi ra
+:bi RR_RA is RR_OP=424 & RR_RB & RR_RA & RR_RT=0
+{
+    goto RR_RA;
+}
+
+# iret ra
+:iret RR_RA is RR_OP=600 & RR_RB & RR_RA & RR_RT=0
+{
+}
+
+# bisled rt,ra
+:bisled RI7_RT,RI7_RA is RI7_OP=427 & RI7_RT & RI7_RA
+{
+}
+
+# bisl rt,ra
+:bisl RI7_RT,RI7_RA is RI7_OP=425 & RI7_RT & RI7_RA
+{
+}
+
+# brnz rt,symbol
+:brnz RI16_RT,targetAddress is RI16_OP=66 & RI16_I16 & RI16_RT & targetAddress
+{
+}
+
+# brz rt,symbol
+:brz RI16_RT,targetAddress is RI16_OP=64 & RI16_I16 & RI16_RT & targetAddress
+{
+}
+
+# brhnz rt,symbol
+:brhnz RI16_RT,targetAddress is RI16_OP=70 & RI16_I16 & RI16_RT & targetAddress
+{
+}
+
+# brhz rt,symbol
+:brhz RI16_RT,targetAddress is RI16_OP=68 & RI16_I16 & RI16_RT & targetAddress
+{
+}
+
+# biz rt,ra
+:biz RR_RT,RR_RA is RR_OP=296 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# binz rt,ra
+:binz RR_RT,RR_RA is RR_OP=297 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# binz rt,ra
+:binz RR_RT,RR_RA is RR_OP=298 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# binz rt,ra
+:binz RR_RT,RR_RA is RR_OP=299 & RR_RB & RR_RA & RR_RT
+{
+}
+
+
+
+#
+## Hint-for-Branch Instructions
+#
+
+# TODO: hbr brinst,brtarg
+:hbr is HBR_OP=428 & HBR_P & HBR_0=0 & HBR_ROH & HBR_RA & HBR_ROL
+{
+}
+
+# TODO: hbra brinst,brtarg
+:hbra is HBRA_OP=8 & HBRA_R0H & HBRA_I16 & HBRA_R0L
+{
+}
+
+
+#
+## Control Instructions
+#
+
+# stop
+:stop is RR_OP=0 & RR_RB=0 & RR_RA & RR_RT
+{
+}
+
+# lnop
+:lnop is RR_OP=1 & RR_RB=0 & RR_RA=0 & RR_RT=0
+{
+}
+
+# nop
+:nop RR_RT is RR_OP=513 & RR_RT
+{
+}
+
+# sync
+:sync is RR_OP=2 & RR_RB
+{
+}
+
