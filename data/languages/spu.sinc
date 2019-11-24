@@ -541,12 +541,35 @@ define pcodeop __spu_fsmh;
 	RI7_RT = __spu_fsmh(RI7_RA);
 }
 
-define pcodeop __spu_fsm;
-
 # fsm rt,ra
 :fsm RI7_RT,RI7_RA is RI7_OP=436 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	RI7_RT = __spu_fsm(RI7_RA);
+	m1 = RI7_RA & 0x1;
+	m2 = RI7_RA & 0x2;
+	m3 = RI7_RA & 0x4;
+	m4 = RI7_RA & 0x8;
+
+	s1 = 0xFFFFFFFF;
+	if (m1 != 0) goto <s1end>;
+	s1 = 0;
+	<s1end>
+	
+	s2 = 0xFFFFFFFF;
+	if (m2 == 0) goto <s2end>;
+	s2 = 0;
+	<s2end>
+	
+	s3 = 0xFFFFFFFF;
+	if (m3 == 0) goto <s3end>;
+	s3 = 0;
+	<s3end>
+	
+	s4 = 0xFFFFFFFF;
+	if (m4 == 0) goto <s4end>;
+	s4 = 0;
+	<s4end>
+
+	RI7_RT = s1 | (s2 << 32) | (s3 << 64) | (s4 << 96);
 }
 
 define pcodeop __spu_gbb;
@@ -872,12 +895,11 @@ define pcodeop __spu_roti;
 	RI7_RT = __spu_roti(RI7_RA, RI7_I7:4);
 }
 
-define pcodeop __spu_rotqby;
-
 # rotqby rt,ra,rb
 :rotqby RR_RT,RR_RA,RR_RB is RR_OP=476 & RR_RT & RR_RA & RR_RB
 {
-    RR_RT = __spu_rotqby(RR_RA,RR_RB);
+	rotby = RR_RB & 0xF;
+	RR_RT = (RR_RA << rotby) | (RR_RA >> (32 - rotby));
 }
 
 define pcodeop __spu_rotqbyi;
@@ -1075,7 +1097,12 @@ define pcodeop __spu_ceqb;
 # ceqb rt,ra,rb
 :ceqb RR_RT,RR_RA,RR_RB is RR_OP=976 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_ceqb(RR_RA, RR_RB);
+	if (RR_RA == RR_RB) goto <true>;
+	RR_RT = 0;
+	goto <skip>;
+	<true>
+	RR_RT = 0xFF;
+	<skip>
 }
 
 define pcodeop __spu_ceqbi;
@@ -1111,7 +1138,7 @@ define pcodeop __spu_ceq;
 	RR_RT = 0;
 	goto <skip>;
 	<true>
-	RR_RT = 1;
+	RR_RT = 0xFFFFFFFF;
 	<skip>
 }
 
@@ -1120,7 +1147,12 @@ define pcodeop __spu_ceqi;
 # ceqi rt,ra,value
 :ceqi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=124 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_ceqi(RI10_RA, RI10_I10:4);
+	if (RI10_RA == RI10_I10) goto <true>;
+	RI10_RT = 0;
+	goto <skip>;
+	<true>
+	RI10_RT = 0xFFFFFFFF;
+	<skip>
 }
 
 define pcodeop __spu_cgtb;
@@ -1172,7 +1204,7 @@ define pcodeop __spu_cgti;
 	RI10_RT = 0;
 	goto <skip>;
 	<true>
-	RI10_RT = 1;
+	RI10_RT = 0xFFFFFFFF;
 	<skip>
 }
 
@@ -1225,7 +1257,7 @@ define pcodeop __spu_clgti;
 	RI10_RT = 0;
 	goto <skip>;
 	<true>
-	RI10_RT = 1;
+	RI10_RT = 0xFFFFFFFF;
 	<skip>
 }
 
