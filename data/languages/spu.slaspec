@@ -1,1 +1,4 @@
+define endian=big;
+define alignment=4;
+
 @include "spu.sinc"

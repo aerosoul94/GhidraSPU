@@ -16,7 +16,7 @@
         <range space="ram"/>
     </global>
     
-    <stackpointer register="r1" space="ram"/>
+    <stackpointer register="sp" space="ram"/>
     
     <default_proto>
         <prototype name="__stdcall" stackshift="0" extrapop="0">
