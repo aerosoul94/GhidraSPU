@@ -473,12 +473,15 @@ define pcodeop __spu_ai;
 {
 }
 
-define pcodeop __spu_ori;
+:lr RI10_RT,RI10_RA is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10=0
+{
+    RI10_RT = RI10_RA;
+}
 
 # ori rt,ra,value
 :ori RI10_RT,RI10_RA,RI10_I10 is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10
 {
-    RI10_RT = __spu_ori(RI10_RA,RI10_I10:4);
+	RI10_RT = RI10_RA | RI10_I10;
 }
 
 # orx rt,ra
