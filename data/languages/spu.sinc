@@ -1,6 +1,4 @@
- 
-define endian=big;
-define alignment=4;
+# Main slaspec must define endianess and alignment
 
 define space ram type=ram_space size=4 default;
 define space register type=register_space size=8;
@@ -853,7 +851,7 @@ define pcodeop __spu_rotqby;
 # bi ra
 :bi RR_RA is RR_OP=424 & RR_RB & RR_RA & RR_RT=0
 {
-    goto RR_RA;
+    goto [RR_RA];
 }
 
 # iret ra
