@@ -58,6 +58,8 @@ define token instr(32)
     HBRA_R0H=(23,24)
     HBRA_I16=(7,22) signed
     HBRA_R0L=(0,6)
+	
+    HBRR_OP=(25,31)
     
     RI18_OP=(25,31)
     RI18_I18=(7,24) signed
@@ -922,6 +924,11 @@ define pcodeop __spu_rotqby;
 
 # TODO: hbra brinst,brtarg
 :hbra is HBRA_OP=8 & HBRA_R0H & HBRA_I16 & HBRA_R0L
+{
+}
+
+# TODO: hbrr brinst,brtarg
+: is HBRR_OP=9
 {
 }
 
