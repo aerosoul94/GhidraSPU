@@ -1,0 +1,8 @@
+<dwarf>
+    <register_mappings>
+        <register_mapping dwarf="0" ghidra="lr"/>
+        <register_mapping dwarf="1" ghidra="sp" stackpointer="true"/>
+        <register_mapping dwarf="2" ghidra="r2" autocount="126"/>
+        <!-- <register_mapping dwarf="128" ghidra="FPSCR"/> -->
+    </register_mappings>
+</dwarf>
