@@ -136,9 +136,12 @@ define pcodeop __spu_lqr;
     *[ram] LSA = RI10_RT;
 }
 
+define pcodeop __spu_stqx;
+
 # stqx rt,ra,rb
 :stqx RR_RT,RR_RA,RR_RB is RR_OP=324 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = __spu_stqx(RR_RA,RR_RB);
 }
 
 define pcodeop __spu_stqa;
@@ -149,9 +152,12 @@ define pcodeop __spu_stqa;
     __spu_stqa(RI16_RT,RI16_I16:4);
 }
 
+define pcodeop __spu_stqr;
+
 # stqr rt,symbol
 :stqr RI16_RT,RI16_I16 is RI16_OP=71 & RI16_I16 & RI16_RT
 {
+    __spu_stqr(RI16_RT,RI16_I16:4);
 }
 
 define pcodeop __spu_cbd;
@@ -162,32 +168,45 @@ define pcodeop __spu_cbd;
     RI7_RT = __spu_cbd(RI7_RA,RI7_I7:4);
 }
 
+define pcodeop __spu_cbx;
+
 # cbx rt,ra,rb
 :cbx RR_RT,RR_RA,RR_RB is RR_OP=468 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = __spu_cbx(RR_RA,RR_RB);
 }
+
+define pcodeop __spu_cwd;
 
 # cwd rt,symbol(ra)
 :cwd RI7_RT,RI7_I7(RI7_RA) is RI7_OP=502 & RI7_I7 & RI7_RA & RI7_RT
 {
+    RI7_RT = __spu_cwd(RI7_RA,RI7_I7:4);
 }
+
+define pcodeop __spu_cwx;
 
 # cwx rt,ra,rb
 :cwx RR_RT,RR_RA,RR_RB is RR_OP=470 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = __spu_cwx(RR_RA,RR_RB);
 }
+
+define pcodeop __spu_cdd;
 
 # cdd rt,symbol(ra)
 :cdd RI7_RT,RI7_I7(RI7_RA) is RI7_OP=503 & RI7_I7 & RI7_RA & RI7_RT
 {
+    RI7_RT = __spu_cdd(RI7_RA,RI7_I7:4);
 }
+
+define pcodeop __spu_cdx;
 
 # cdx rt,ra,rb
 :cdx RR_RT,RR_RA,RR_RB is RR_OP=471 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = __spu_cdx(RR_RA,RR_RB);
 }
-
-
 
 #
 ## Constant-Formation Instructions
