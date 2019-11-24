@@ -151,7 +151,9 @@ define pcodeop __spu_lqx;
 # lqx rt,ra,rb
 :lqx RR_RT,RR_RA,RR_RB is RR_OP=452 & RR_RT & RR_RA & RR_RB
 {
-    RR_RT = __spu_lqx(RR_RA,RR_RB);
+	#addr:8 = (RR_RA + RR_RB) & 0xFFFFFFF0;
+	addr:8 = RR_RA + RR_RB;
+    RR_RT = *[ram]:16 addr;
 }
 
 define pcodeop __spu_lqa;
@@ -181,7 +183,9 @@ define pcodeop __spu_stqx;
 # stqx rt,ra,rb
 :stqx RR_RT,RR_RA,RR_RB is RR_OP=324 & RR_RB & RR_RA & RR_RT
 {
-    RR_RT = __spu_stqx(RR_RA,RR_RB);
+	#addr:8 = (RR_RA + RR_RB) & 0xFFFFFFF0;
+	addr:8 = RR_RA + RR_RB;
+    *[ram]:16 addr = RR_RT;
 }
 
 define pcodeop __spu_stqa;
