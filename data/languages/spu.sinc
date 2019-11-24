@@ -177,6 +177,22 @@ define pcodeop __spu_cbx;
     RR_RT = __spu_cbx(RR_RA,RR_RB);
 }
 
+define pcodeop __spu_chd;
+
+# chd rt,symbol(ra)
+:chd RI7_RT,RI7_I7(RI7_RA) is RI7_OP=501 & RI7_I7 & RI7_RA & RI7_RT
+{
+    RI7_RT = __spu_chd(RI7_RA,RI7_I7:4);
+}
+
+define pcodeop __spu_chx;
+
+# chx rt,ra,rb
+:chx RR_RT,RR_RA,RR_RB is RR_OP=469 & RR_RB & RR_RA & RR_RT
+{
+    RR_RT = __spu_chx(RR_RA,RR_RB);
+}
+
 define pcodeop __spu_cwd;
 
 # cwd rt,symbol(ra)
@@ -281,13 +297,15 @@ define pcodeop __spu_fsmbi;
 # a rt,ra,rb
 :a RR_RT,RR_RA,RR_RB is RR_OP=192 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = (RR_RA + RR_RB) & 0xFFFFFFFF;
+	#RR_RT = (RR_RA + RR_RB) & 0xFFFFFFFF;
+	RR_RT = RR_RA + RR_RB;
 }
 
 # ai rt,ra,value
 :ai RI10_RT,RI10_RA,RI10_I10 is RI10_OP=28 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_RA + RI10_I10) & 0xFFFFFFFF;
+	#RI10_RT = (RI10_RA + RI10_I10) & 0xFFFFFFFF;
+	RI10_RT = RI10_RA + RI10_I10;
 }
 
 # sfh rt,ra,rb
@@ -338,144 +356,228 @@ define pcodeop __spu_cgx;
 	RR_RT = __spu_cgx(RR_RA, RR_RB);
 }
 
+define pcodeop __spu_sfx;
+
 # sfx rt,ra,rb
 :sfx RR_RT,RR_RA,RR_RB is RR_OP=833 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_sfx(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_bg;
 
 # bg rt,ra,rb
 :bg RR_RT,RR_RA,RR_RB is RR_OP=66 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_bg(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_bgx;
 
 # bgx rt,ra,rb
 :bgx RR_RT,RR_RA,RR_RB is RR_OP=835 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_bgx(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_mpy;
 
 # mpy rt,ra,rb
 :mpy RR_RT,RR_RA,RR_RB is RR_OP=964 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_mpy(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_mpyu;
 
 # mpyu rt,ra,rb
 :mpyu RR_RT,RR_RA,RR_RB is RR_OP=972 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_mpyu(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_mpyi;
 
 # mpyi rt,ra,value
 :mpyi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=116 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_mpyi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_mpyui;
 
 # mpyui rt,ra,value
 :mpyui RI10_RT,RI10_RA,RI10_I10 is RI10_OP=117 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_mpyui(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_mpya;
 
 # mpya rt,ra,rb,rc
 :mpya RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=12 & RRR_RT & RRR_RB & RRR_RA & RRR_RC
 {
+	RRR_RT = __spu_mpya(RRR_RA, RRR_RB, RRR_RC);
 }
+
+define pcodeop __spu_mpyh;
 
 # mpyh rt,ra,rb
 :mpyh RR_RT,RR_RA,RR_RB is RR_OP=965 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_mpyh(RR_RA, RR_RB);
 }
 
-# mpyh rt,ra,rb
-:mpyh RR_RT,RR_RA,RR_RB is RR_OP=967 & RR_RT & RR_RA & RR_RB
+define pcodeop __spu_mpys;
+
+# mpys rt,ra,rb
+:mpys RR_RT,RR_RA,RR_RB is RR_OP=967 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_mpys(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_mpyhh;
 
 # mpyhh rt,ra,rb
 :mpyhh RR_RT,RR_RA,RR_RB is RR_OP=966 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_mpyhh(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_mpyhha;
 
 # mpyhha rt,ra,rb
 :mpyhha RR_RT,RR_RA,RR_RB is RR_OP=838 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_mpyhha(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_mpyhhu;
 
 # mpyhhu rt,ra,rb
 :mpyhhu RR_RT,RR_RA,RR_RB is RR_OP=974 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_mpyhhu(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_mpyhhau;
 
 # mpyhhau rt,ra,rb
 :mpyhhau RR_RT,RR_RA,RR_RB is RR_OP=846 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_mpyhhau(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_clz;
 
 # clz rt,ra
 :clz RI7_RT,RI7_RA is RI7_OP=677 & RI7_I7=0 & RI7_RA & RI7_RT
 {
+	RI7_RT = __spu_clz(RI7_RA);
 }
+
+define pcodeop __spu_cntb;
 
 # cntb rt,ra
 :cntb RI7_RT,RI7_RA is RI7_OP=692 & RI7_I7=0 & RI7_RA & RI7_RT
 {
+	RI7_RT = __spu_cntb(RI7_RA);
 }
+
+define pcodeop __spu_fsmb;
 
 # fsmb rt,ra
 :fsmb RI7_RT,RI7_RA is RI7_OP=438 & RI7_I7=0 & RI7_RA & RI7_RT
 {
+	RI7_RT = __spu_fsmb(RI7_RA);
 }
+
+define pcodeop __spu_fsmh;
 
 # fsmh rt,ra
 :fsmh RI7_RT,RI7_RA is RI7_OP=437 & RI7_I7=0 & RI7_RA & RI7_RT
 {
+	RI7_RT = __spu_fsmh(RI7_RA);
 }
+
+define pcodeop __spu_fsm;
 
 # fsm rt,ra
 :fsm RI7_RT,RI7_RA is RI7_OP=436 & RI7_I7=0 & RI7_RA & RI7_RT
 {
+	RI7_RT = __spu_fsm(RI7_RA);
 }
+
+define pcodeop __spu_gbb;
 
 # gbb rt,ra
 :gbb RI7_RT,RI7_RA is RI7_OP=434 & RI7_I7=0 & RI7_RA & RI7_RT
 {
+	RI7_RT = __spu_gbb(RI7_RA);
 }
+
+define pcodeop __spu_gbh;
 
 # gbh rt,ra
 :gbh RI7_RT,RI7_RA is RI7_OP=433 & RI7_I7=0 & RI7_RA & RI7_RT
 {
+	RI7_RT = __spu_gbh(RI7_RA);
 }
+
+define pcodeop __spu_gb;
 
 # gb rt,ra
 :gb RI7_RT,RI7_RA is RI7_OP=432 & RI7_I7=0 & RI7_RA & RI7_RT
 {
+	RI7_RT = __spu_gb(RI7_RA);
 }
+
+define pcodeop __spu_avgb;
 
 # avgb rt,ra,rb
 :avgb RR_RT,RR_RA,RR_RB is RR_OP=211 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_avgb(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_absdb;
 
 # absdb rt,ra,rb
 :absdb RR_RT,RR_RA,RR_RB is RR_OP=83 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_absdb(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_sumb;
 
 # sumb rt,ra,rb
 :sumb RR_RT,RR_RA,RR_RB is RR_OP=595 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_sumb(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_xsbh;
 
 # xsbh rt,ra
 :xsbh RR_RT,RR_RA is RR_OP=694 & RR_RB=0 & RR_RA & RR_RT
 {
+	RR_RT = __spu_xsbh(RR_RA);
 }
+
+define pcodeop __spu_xshw;
 
 # xshw rt,ra
 :xshw RR_RT,RR_RA is RR_OP=686 & RR_RB=0 & RR_RA & RR_RT
 {
+	RR_RT = __spu_xshw(RR_RA);
 }
+
+define pcodeop __spu_xswd;
 
 # xswd rt,ra
 :xswd RR_RT,RR_RA is RR_OP=678 & RR_RB=0 & RR_RA & RR_RT
 {
+	RR_RT = __spu_xswd(RR_RA);
 }
 
 # and rt,ra,rb
@@ -541,13 +643,15 @@ define pcodeop __spu_cgx;
 # lr rt,ra
 :lr RI10_RT,RI10_RA is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10=0
 {
-    RI10_RT = RI10_RA & 0xFFFFFFFF;
+    #RI10_RT = RI10_RA & 0xFFFFFFFF;
+    RI10_RT = RI10_RA;
 }
 
 # ori rt,ra,value
 :ori RI10_RT,RI10_RA,RI10_I10 is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_RA | RI10_I10) & 0xFFFFFFFF;
+	#RI10_RT = (RI10_RA | RI10_I10) & 0xFFFFFFFF;
+	RI10_RT = RI10_RA | RI10_I10;
 }
 
 # orx rt,ra
@@ -617,69 +721,114 @@ define pcodeop __spu_shufb;
 ## Shift and Rotate Instructions
 #
 
+define pcodeop __spu_shlh;
+
 # shlh rt,ra,rb
 :shlh RR_RT,RR_RA,RR_RB is RR_OP=95 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_shlh(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_shlhi;
 
 # shlhi rt,ra,rb
 :shlhi RR_RT,RR_RA,RR_RB is RR_OP=127 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_shlhi(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_shl;
 
 # shl rt,ra,rb
 :shl RR_RT,RR_RA,RR_RB is RR_OP=91 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_shl(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_shli;
 
 # shli rt,ra,value
 :shli RI7_RT,RI7_RA,RI7_I7 is RI7_OP=123 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_shli(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_shlqbi;
 
 # shlqbi rt,ra,rb
 :shlqbi RR_RT,RR_RA,RR_RB is RR_OP=475 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_shlqbi(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_shlqbii;
 
 # shlqbii rt,ra,value
 :shlqbii RI7_RT,RI7_RA,RI7_I7 is RI7_OP=507 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_shlqbii(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_shlqby;
 
 # shlqby rt,ra,rb
 :shlqby RR_RT,RR_RA,RR_RB is RR_OP=479 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_shlqby(RR_RA, RR_RB);
 }
+
+#lr rt,ra
+:lr RI7_RT,RI7_RA is RI7_OP=511 & RI7_RT & RI7_RA & RI7_I7=0
+{
+	RI7_RT = RI7_RA;
+}
+
+define pcodeop __spu_shlqbyi;
 
 # shlqbyi rt,ra,value
 :shlqbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=511 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_shlqbyi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_shlqbybi;
 
 # shlqbybi rt,ra,rb
 :shlqbybi RR_RT,RR_RA,RR_RB is RR_OP=463 & RR_RB & RR_RA & RR_RT
 {
+	RR_RT = __spu_shlqbybi(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_roth;
 
 # roth rt,ra,rb
 :roth RR_RT,RR_RA,RR_RB is RR_OP=92 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_roth(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rothi;
 
 # rothi rt,ra,value
 :rothi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=124 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rothi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rot;
 
 # rot rt,ra,rb
 :rot RR_RT,RR_RA,RR_RB is RR_OP=88 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rot(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_roti;
 
 # roti rt,ra,value
 :roti RI7_RT,RI7_RA,RI7_I7 is RI7_OP=120 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_roti(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_rotqby;
@@ -690,89 +839,140 @@ define pcodeop __spu_rotqby;
     RR_RT = __spu_rotqby(RR_RA,RR_RB);
 }
 
+define pcodeop __spu_rotqbyi;
+
 # rotqbyi rt,ra,value
 :rotqbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=508 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rotqbyi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rotqbybi;
 
 # rotqbybi rt,ra,rb
 :rotqbybi RR_RT,RR_RA,RR_RB is RR_OP=460 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rotqbybi(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rotqbi;
 
 # rotqbi rt,ra,value
 :rotqbi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=472 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rotqbi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rotqbii;
 
 # rotqbii rt,ra,rb
 :rotqbii RR_RT,RR_RA,RR_RB is RR_OP=504 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rotqbii(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rothm;
 
 # rothm rt,ra,rb
 :rothm RR_RT,RR_RA,RR_RB is RR_OP=93 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rothm(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rothmi;
 
 # rothmi rt,ra,value
 :rothmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=125 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rothmi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rotm;
 
 # rotm rt,ra,rb
 :rotm RR_RT,RR_RA,RR_RB is RR_OP=89 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rotm(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rotmi;
 
 # rotmi rt,ra,value
 :rotmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=121 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rotmi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rotqmby;
 
 # rotqmby rt,ra,rb
 :rotqmby RR_RT,RR_RA,RR_RB is RR_OP=477 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rotqmby(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rotqmbyi;
 
 # rotqmbyi rt,ra,value
 :rotqmbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=509 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rotqmbyi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rotqmbybi;
 
 # rotqmbybi rt,ra,rb
 :rotqmbybi RR_RT,RR_RA,RR_RB is RR_OP=461 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rotqmbybi(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rotqmbi;
 
 # rotqmbi rt,ra,value
 :rotqmbi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=473 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rotqmbi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rotqmbii;
 
 # rotqmbii rt,ra,value
 :rotqmbii RI7_RT,RI7_RA,RI7_I7 is RI7_OP=505 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rotqmbii(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rotmah;
 
 # rotmah rt,ra,rb
 :rotmah RR_RT,RR_RA,RR_RB is RR_OP=94 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rotmah(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rotmahi;
 
 # rotmahi rt,ra,value
 :rotmahi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=126 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rotmahi(RI7_RA, RI7_I7:4);
 }
+
+define pcodeop __spu_rotma;
 
 # rotma rt,ra,rb
 :rotma RR_RT,RR_RA,RR_RB is RR_OP=90 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_rotma(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_rotmai;
 
 # rotmai rt,ra,value
 :rotmai RI7_RT,RI7_RA,RI7_I7 is RI7_OP=122 & RI7_RT & RI7_RA & RI7_I7
 {
+	RI7_RT = __spu_rotmai(RI7_RA, RI7_I7:4);
 }
 
 
@@ -781,124 +981,201 @@ define pcodeop __spu_rotqby;
 ## Compare, Branch, and Halt Instructions
 #
 
+define pcodeop __spu_heq;
+
 # heq ra,rb
 :heq RR_RA,RR_RB is RR_OP=984 & RR_RT & RR_RA & RR_RB
 {
+	__spu_heq(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_heqi;
 
 # heqi ra,value
 :heqi RI10_RA,RI10_I10 is RI10_OP=127 & RI10_RT & RI10_RA & RI10_I10
 {
+	__spu_heqi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_hgt;
 
 # hgt ra,rb
 :hgt RR_RA,RR_RB is RR_OP=600 & RR_RT & RR_RA & RR_RB
 {
+	__spu_hgt(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_hgti;
 
 # hgti ra,value
 :hgti RI10_RA,RI10_I10 is RI10_OP=79 & RI10_RT & RI10_RA & RI10_I10
 {
+	__spu_hgti(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_hlgt;
 
 # hlgt ra,rb
 :hlgt RR_RA,RR_RB is RR_OP=728 & RR_RT & RR_RA & RR_RB
 {
+	__spu_hlgt(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_hlgti;
 
 # hlgti ra,value
 :hlgti RI10_RA,RI10_I10 is RI10_OP=95 & RI10_RT & RI10_RA & RI10_I10
 {
+	__spu_hlgti(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_ceqb;
 
 # ceqb rt,ra,rb
 :ceqb RR_RT,RR_RA,RR_RB is RR_OP=976 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_ceqb(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_ceqbi;
 
 # ceqbi rt,ra,value
 :ceqbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=126 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_ceqbi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_ceqh;
 
 # ceqh rt,ra,rb
 :ceqh RR_RT,RR_RA,RR_RB is RR_OP=968 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_ceqh(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_ceqhi;
 
 # ceqhi rt,ra,value
 :ceqhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=125 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_ceqhi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_ceq;
 
 # ceq rt,ra,rb
 :ceq RR_RT,RR_RA,RR_RB is RR_OP=960 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_ceq(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_ceqi;
 
 # ceqi rt,ra,value
 :ceqi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=124 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_ceqi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_cgtb;
 
 # cgtb rt,ra,rb
 :cgtb RR_RT,RR_RA,RR_RB is RR_OP=592 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_cgtb(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_cgtbi;
 
 # cgtbi rt,ra,value
 :cgtbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=78 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_cgtbi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_cgth;
 
 # cgth rt,ra,rb
 :cgth RR_RT,RR_RA,RR_RB is RR_OP=584 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_cgth(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_cgthi;
 
 # cgthi rt,ra,value
 :cgthi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=115 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_cgthi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_cgt;
 
 # cgt rt,ra,rb
 :cgt RR_RT,RR_RA,RR_RB is RR_OP=576 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_cgt(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_cgti;
 
 # cgti rt,ra,value
 :cgti RI10_RT,RI10_RA,RI10_I10 is RI10_OP=76 & RI10_RT & RI10_RA & RI10_I10
 {
+	if (RI10_RA s> RI10_I10) goto <true>;
+	RI10_RT = 0;
+	goto <skip>;
+	<true>
+	RI10_RT = 1;
+	<skip>
 }
+
+define pcodeop __spu_clgtb;
 
 # clgtb rt,ra,rb
 :clgtb RR_RT,RR_RA,RR_RB is RR_OP=720 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_clgtb(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_clgtbi;
 
 # clgtbi rt,ra,value
 :clgtbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=94 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_clgtbi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_clgth;
 
 # clgth rt,ra,rb
 :clgth RR_RT,RR_RA,RR_RB is RR_OP=712 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_clgth(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_clgthi;
 
 # clgthi rt,ra,value
 :clgthi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=93 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_clgthi(RI10_RA, RI10_I10:4);
 }
+
+define pcodeop __spu_clgt;
 
 # clgt rt,ra,rb
 :clgt RR_RT,RR_RA,RR_RB is RR_OP=704 & RR_RT & RR_RA & RR_RB
 {
+	RR_RT = __spu_clgt(RR_RA, RR_RB);
 }
+
+define pcodeop __spu_clgti;
 
 # clgti rt,ra,value
 :clgti RI10_RT,RI10_RA,RI10_I10 is RI10_OP=92 & RI10_RT & RI10_RA & RI10_I10
 {
+	RI10_RT = __spu_clgti(RI10_RA, RI10_I10:4);
 }
 
 # br symbol
@@ -939,59 +1216,94 @@ define pcodeop __spu_rotqby;
     goto [RR_RA];
 }
 
+define pcodeop __spu_iret;
+
 # iret ra
 :iret RR_RA is RR_OP=600 & RR_RB & RR_RA & RR_RT=0
 {
+	__spu_iret(RR_RA);
 }
+
+define pcodeop __spu_bisled;
 
 # bisled rt,ra
 :bisled RI7_RT,RI7_RA is RI7_OP=427 & RI7_RT & RI7_RA
 {
+    __spu_bisled(RI7_RT, RI7_RA:4);
 }
+
+define pcodeop __spu_bisl;
 
 # bisl rt,ra
 :bisl RI7_RT,RI7_RA is RI7_OP=425 & RI7_RT & RI7_RA
 {
+    __spu_bisl(RI7_RT, RI7_RA:4);
 }
+
+define pcodeop __spu_brnz;
 
 # brnz rt,symbol
 :brnz RI16_RT,targetAddress is RI16_OP=66 & RI16_I16 & RI16_RT & targetAddress
 {
+    __spu_brnz(RI16_RT, targetAddress);
 }
+
+define pcodeop __spu_brz;
 
 # brz rt,symbol
 :brz RI16_RT,targetAddress is RI16_OP=64 & RI16_I16 & RI16_RT & targetAddress
 {
+    #__spu_brz(RI16_RT, targetAddress);
+	if (RI16_RT == 0)
+		goto targetAddress;
 }
+
+define pcodeop __spu_brhnz;
 
 # brhnz rt,symbol
 :brhnz RI16_RT,targetAddress is RI16_OP=70 & RI16_I16 & RI16_RT & targetAddress
 {
+    __spu_brhnz(RI16_RT, targetAddress);
 }
+
+define pcodeop __spu_brhz;
 
 # brhz rt,symbol
 :brhz RI16_RT,targetAddress is RI16_OP=68 & RI16_I16 & RI16_RT & targetAddress
 {
+    __spu_brhz(RI16_RT, targetAddress);
 }
+
+define pcodeop __spu_biz;
 
 # biz rt,ra
 :biz RR_RT,RR_RA is RR_OP=296 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = __spu_biz(RR_RA);
 }
+
+define pcodeop __spu_binz;
 
 # binz rt,ra
 :binz RR_RT,RR_RA is RR_OP=297 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = __spu_binz(RR_RA);
 }
 
-# binz rt,ra
-:binz RR_RT,RR_RA is RR_OP=298 & RR_RB & RR_RA & RR_RT
+define pcodeop __spu_bihz;
+
+# bihz rt,ra
+:bihz RR_RT,RR_RA is RR_OP=298 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = __spu_bihz(RR_RA);
 }
 
-# binz rt,ra
-:binz RR_RT,RR_RA is RR_OP=299 & RR_RB & RR_RA & RR_RT
+define pcodeop __spu_bihnz;
+
+# bihnz rt,ra
+:bihnz RR_RT,RR_RA is RR_OP=299 & RR_RB & RR_RA & RR_RT
 {
+    RR_RT = __spu_bihnz(RR_RA);
 }
 
 
@@ -1015,6 +1327,9 @@ define pcodeop __spu_rotqby;
 {
 }
 
+#
+## Floating-Point Instructions
+#
 
 #
 ## Control Instructions
@@ -1022,6 +1337,11 @@ define pcodeop __spu_rotqby;
 
 # stop
 :stop is RR_OP=0 & RR_RB=0 & RR_RA & RR_RT
+{
+}
+
+# stopd
+:stopd is RR_OP=320
 {
 }
 
@@ -1040,3 +1360,39 @@ define pcodeop __spu_rotqby;
 {
 }
 
+# dsync
+:dsync is RR_OP=3
+{
+}
+
+#mfspr
+
+#mtspr
+
+#
+## Channel Instructions
+#
+
+define pcodeop __spu_ChannelRead;
+
+#rdch rt,ca
+:rdch RR_RT,RR_RA is RR_OP=13 & RR_RA & RR_RT
+{
+	RR_RT = __spu_ChannelRead(RR_RA);
+}
+
+define pcodeop __spu_ChannelCapacity;
+
+#rchcnt rt,ca
+:rdch RR_RT,RR_RA is RR_OP=15 & RR_RA & RR_RT
+{
+	RR_RT = __spu_ChannelCapacity(RR_RA);
+}
+
+define pcodeop __spu_ChannelWrite;
+
+#wrch rt,ca
+:wrch RR_RT,RR_RA is RR_OP=269 & RR_RA & RR_RT
+{
+	__spu_ChannelWrite(RR_RA, RR_RT);
+}
