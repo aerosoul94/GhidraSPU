@@ -7,10 +7,9 @@
               version="1.0"
               slafile="spu.sla"
               processorspec="spu.pspec"
-              id="Synergistic Processor Unit">
-        <description>SPU 128-bit processor, big endian</description>
+              id="SPU:BE:128:default">
+        <description>Synergistic Processor Unit</description>
         <compiler name="default" spec="spu.cspec" id="default"/>
         <external_name tool="DWARF.register.mapping.file" name="spu.dwarf"/>
     </language>
 </language_definitions>
- 
