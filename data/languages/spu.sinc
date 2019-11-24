@@ -845,8 +845,6 @@ define pcodeop __spu_rotqby;
 {
 }
 
-
-
 # br symbol
 :br targetAddress is RI16_OP=100 & RI16_I16 & RI16_RT=0 & targetAddress
 {
@@ -956,7 +954,7 @@ define pcodeop __spu_rotqby;
 }
 
 # TODO: hbrr brinst,brtarg
-: is HBRR_OP=9
+:hbrr is HBRR_OP=9
 {
 }
 
