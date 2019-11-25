@@ -942,12 +942,16 @@ define pcodeop __spu_rothm;
 	RR_RT = __spu_rothm(RR_RA, RR_RB);
 }
 
-define pcodeop __spu_rothmi;
-
 # rothmi rt,ra,value
 :rothmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=125 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rothmi(RI7_RA, RI7_I7:4);
+	shift_count = (0 - RI7_I7) % 32;
+	if (shift_count < 16) goto <shift_right>;
+	RI7_RT = 0;
+	goto <skip>;
+	<shift_right>
+	RI7_RT = RI7_RA >> shift_count;
+	<skip>
 }
 
 define pcodeop __spu_rotm;
@@ -1189,10 +1193,16 @@ define pcodeop __spu_cgthi;
 
 define pcodeop __spu_cgt;
 
+#TODO: fix this once 128 bits supported properly
 # cgt rt,ra,rb
 :cgt RR_RT,RR_RA,RR_RB is RR_OP=576 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_cgt(RR_RA, RR_RB);
+	if (RR_RA s> RR_RB) goto <true>;
+	RR_RT = 0;
+	goto <skip>;
+	<true>
+	RR_RT = 0xFFFFFFFF;
+	<skip>
 }
 
 define pcodeop __spu_cgti;
