@@ -1255,7 +1255,12 @@ define pcodeop __spu_clgt;
 # clgt rt,ra,rb
 :clgt RR_RT,RR_RA,RR_RB is RR_OP=704 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_clgt(RR_RA, RR_RB);
+	if (RR_RA > RR_RB) goto <true>;
+	RR_RT = 0;
+	goto <skip>;
+	<true>
+	RR_RT = 0xFFFFFFFF;
+	<skip>
 }
 
 define pcodeop __spu_clgti;
