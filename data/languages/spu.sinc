@@ -1468,7 +1468,7 @@ define pcodeop __spu_bihnz;
 }
 
 # fma rt,ra,rb,rc
-:fma RR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=14 & RR_RB & RR_RA & RR_RT & RRR_RC
+:fma RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=14 & RRR_RB & RRR_RA & RRR_RT & RRR_RC
 {
 }
 
@@ -1478,7 +1478,7 @@ define pcodeop __spu_bihnz;
 }
 
 # fnms rt,ra,rb,rc
-:fnms RR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=13 & RR_RB & RR_RA & RR_RT & RRR_RC
+:fnms RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=13 & RRR_RB & RRR_RA & RRR_RT & RRR_RC
 {
 }
 
@@ -1488,7 +1488,7 @@ define pcodeop __spu_bihnz;
 }
 
 # fms rt,ra,rb,rc
-:fms RR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=15 & RR_RB & RR_RA & RR_RT & RRR_RC
+:fms RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=15 & RRR_RB & RRR_RA & RRR_RT & RRR_RC
 {
 }
 
