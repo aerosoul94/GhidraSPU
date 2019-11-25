@@ -58,6 +58,11 @@ define token instr(32)
     RI7_RA=(7,13)
     RI7_RT=(0,6)
     
+    RI8_OP=(22,31)
+    RI8_I8=(14,21) signed
+    RI8_RA=(7,13)
+    RI8_RT=(0,6)
+    
     RI10_OP=(24,31)
     RI10_I10=(14,23) signed
     RI10_RA=(7,13)
@@ -1431,9 +1436,178 @@ define pcodeop __spu_bihnz;
 {
 }
 
+
+
 #
 ## Floating-Point Instructions
 #
+
+# fa rt,ra,rb
+:fa RR_RT,RR_RA,RR_RB is RR_OP=708 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# dfa rt,ra,rb
+:dfa RR_RT,RR_RA,RR_RB is RR_OP=716 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fs rt,ra,rb
+:fs RR_RT,RR_RA,RR_RB is RR_OP=709 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# dfs rt,ra,rb
+:dfs RR_RT,RR_RA,RR_RB is RR_OP=717 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fm rt,ra,rb
+:fm RR_RT,RR_RA,RR_RB is RR_OP=710 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# dfm rt,ra,rb
+:dfm RR_RT,RR_RA,RR_RB is RR_OP=718 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fma rt,ra,rb,rc
+:fma RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=14 & RRR_RB & RRR_RA & RRR_RT & RRR_RC
+{
+}
+
+# dfma rt,ra,rb
+:dfma RR_RT,RR_RA,RR_RB is RR_OP=860 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fnms rt,ra,rb,rc
+:fnms RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=13 & RRR_RB & RRR_RA & RRR_RT & RRR_RC
+{
+}
+
+# dfnms rt,ra,rb
+:dfnms RR_RT,RR_RA,RR_RB is RR_OP=862 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fms rt,ra,rb,rc
+:fms RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=15 & RRR_RB & RRR_RA & RRR_RT & RRR_RC
+{
+}
+
+# dfms rt,ra,rb
+:dfms RR_RT,RR_RA,RR_RB is RR_OP=861 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# dfnma rt,ra,rb
+:dfnma RR_RT,RR_RA,RR_RB is RR_OP=863 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# frest rt,ra
+:frest RI7_RT,RI7_RA is RI7_OP=440 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# frsqest rt,ra
+:frsqest RI7_RT,RI7_RA is RI7_OP=441 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# fi rt,ra,rb
+:fi RR_RT,RR_RA,RR_RB is RR_OP=980 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# csflt rt,ra,scale
+:csflt RI8_RT,RI8_RA,RI8_I8 is RI8_OP=474 & RI8_I8 & RI8_RA & RI8_RT
+{
+}
+
+# cflts rt,ra,scale
+:cflts RI8_RT,RI8_RA,RI8_I8 is RI8_OP=472 & RI8_I8 & RI8_RA & RI8_RT
+{
+}
+
+# cuflt rt,ra,scale
+:cuflt RI8_RT,RI8_RA,RI8_I8 is RI8_OP=475 & RI8_I8 & RI8_RA & RI8_RT
+{
+}
+
+# cfltu rt,ra,scale
+:cfltu RI8_RT,RI8_RA,RI8_I8 is RI8_OP=473 & RI8_I8 & RI8_RA & RI8_RT
+{
+}
+
+# frds rt,ra
+:frds RI7_RT,RI7_RA is RI7_OP=953 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# fesd rt,ra
+:fesd RI7_RT,RI7_RA is RI7_OP=952 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# dfceq rt,ra,rb
+:dfceq RR_RT,RR_RA,RR_RB is RR_OP=963 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# dfcmeq rt,ra,rb
+:dfcmeq RR_RT,RR_RA,RR_RB is RR_OP=971 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# dfcgt rt,ra,rb
+:dfcgt RR_RT,RR_RA,RR_RB is RR_OP=707 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# dfcmgt rt,ra,rb
+:dfcmgt RR_RT,RR_RA,RR_RB is RR_OP=715 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# dftsv rt,ra,value
+:dftsv RI7_RT,RI7_RA is RI7_OP=959 & RI7_I7 & RI7_RA & RI7_RT
+{
+}
+
+# fceq rt,ra,rb
+:fceq RR_RT,RR_RA,RR_RB is RR_OP=962 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fcmeq rt,ra,rb
+:fcmeq RR_RT,RR_RA,RR_RB is RR_OP=970 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fcgt rt,ra,rb
+:fcgt RR_RT,RR_RA,RR_RB is RR_OP=706 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fcmgt rt,ra,rb
+:fcmgt RR_RT,RR_RA,RR_RB is RR_OP=714 & RR_RB & RR_RA & RR_RT
+{
+}
+
+# fscrwr ra
+:fscrwr RI7_RA is RI7_OP=954 & RI7_I7=0 & RI7_RA & RI7_RT
+{
+}
+
+# fscrrd rt
+:fscrrd RI7_RT is RI7_OP=954 & RI7_I7=0 & RI7_RA=0 & RI7_RT
+{
+}
+
+
 
 #
 ## Control Instructions
