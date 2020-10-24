@@ -967,12 +967,16 @@ define pcodeop __spu_rotm;
 	RR_RT = __spu_rotm(RR_RA, RR_RB);
 }
 
-define pcodeop __spu_rotmi;
-
 # rotmi rt,ra,value
 :rotmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=121 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotmi(RI7_RA, RI7_I7:4);
+	shift_count = (0 - RI7_I7) % 64;
+	if (shift_count < 32) goto <shift_right>;
+	RI7_RT = 0;
+	goto <skip>;
+	<shift_right>
+	RI7_RT = RI7_RA >> shift_count;
+	<skip>
 }
 
 define pcodeop __spu_rotqmby;
