@@ -46,46 +46,46 @@ define token instr(32)
     CH_OP=(21,31)
     CH_CA=(7,13)
     CH_RT=(0,6)
-    
+
     RRR_OP=(28,31)
     RRR_RT=(21,27)
     RRR_RB=(14,20)
     RRR_RA=(7,13)
     RRR_RC=(0,6)
-    
+
     RI7_OP=(21,31)
     RI7_I7=(14,19) signed
     RI7_RA=(7,13)
     RI7_RT=(0,6)
-    
+
     RI8_OP=(22,31)
     RI8_I8=(14,21) signed
     RI8_RA=(7,13)
     RI8_RT=(0,6)
-    
+
     RI10_OP=(24,31)
     RI10_I10=(14,23) signed
     RI10_RA=(7,13)
     RI10_RT=(0,6)
-    
+
     RI16_OP=(23,31)
     RI16_I16=(7,22) signed
     RI16_RT=(0,6)
-    
+
     HBR_OP=(21,31)
     HBR_P=(20,20)
     HBR_0=(16,19)
     HBR_ROH=(14,15)
     HBR_RA=(7,13)
     HBR_ROL=(0,6)
-    
+
     HBRA_OP=(25,31)
     HBRA_R0H=(23,24)
     HBRA_I16=(7,22) signed
     HBRA_R0L=(0,6)
-	
+
     HBRR_OP=(25,31)
-    
+
     RI18_OP=(25,31)
     RI18_I18=(7,24) signed
     RI18_I18u=(7,24)
@@ -558,17 +558,17 @@ define pcodeop __spu_fsmh;
 	if (m1 != 0) goto <s1end>;
 	s1 = 0;
 	<s1end>
-	
+
 	s2 = 0xFFFFFFFF;
 	if (m2 == 0) goto <s2end>;
 	s2 = 0;
 	<s2end>
-	
+
 	s3 = 0xFFFFFFFF;
 	if (m3 == 0) goto <s3end>;
 	s3 = 0;
 	<s3end>
-	
+
 	s4 = 0xFFFFFFFF;
 	if (m4 == 0) goto <s4end>;
 	s4 = 0;
