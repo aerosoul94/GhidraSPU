@@ -795,31 +795,65 @@ define pcodeop __spu_shlh;
 # shlh rt,ra,rb
 :shlh RR_RT,RR_RA,RR_RB is RR_OP=95 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_shlh(RR_RA, RR_RB);
+	shift_count = RR_RB % 32;
+	if (shift_count == 0) goto <copy>;
+	if (shift_count > 15) goto <zero_out>;
+	RR_RT = RR_RA << shift_count;
+	goto <skip>;
+	<zero_out>
+	RR_RT = 0;
+	goto <skip>;
+	<copy>
+	RR_RT = RR_RA;
+	<skip>
 }
 
-define pcodeop __spu_shlhi;
-
-# shlhi rt,ra,rb
-:shlhi RR_RT,RR_RA,RR_RB is RR_OP=127 & RR_RB & RR_RA & RR_RT
+# shlhi rt,ra,value
+:shlhi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=127 & RI7_RT & RI7_RA & RI7_I7
 {
-	RR_RT = __spu_shlhi(RR_RA, RR_RB);
+	shift_count = RI7_I7 % 32;
+	if (shift_count == 0) goto <copy>;
+	if (shift_count > 15) goto <zero_out>;
+	RI7_RT = RI7_RA << shift_count;
+	goto <skip>;
+	<zero_out>
+	RI7_RT = 0;
+	goto <skip>;
+	<copy>
+	RI7_RT = RI7_RA;
+	<skip>
 }
-
-define pcodeop __spu_shl;
 
 # shl rt,ra,rb
 :shl RR_RT,RR_RA,RR_RB is RR_OP=91 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_shl(RR_RA, RR_RB);
+	shift_count = RR_RB % 64;
+	if (shift_count == 0) goto <copy>;
+	if (shift_count > 31) goto <zero_out>;
+	RR_RT = RR_RA << shift_count;
+	goto <skip>;
+	<zero_out>
+	RR_RT = 0;
+	goto <skip>;
+	<copy>
+	RR_RT = RR_RA;
+	<skip>
 }
-
-define pcodeop __spu_shli;
 
 # shli rt,ra,value
 :shli RI7_RT,RI7_RA,RI7_I7 is RI7_OP=123 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_shli(RI7_RA, RI7_I7:4);
+	shift_count = RI7_I7 % 64;
+	if (shift_count == 0) goto <copy>;
+	if (shift_count > 31) goto <zero_out>;
+	RI7_RT = RI7_RA << shift_count;
+	goto <skip>;
+	<zero_out>
+	RI7_RT = 0;
+	goto <skip>;
+	<copy>
+	RI7_RT = RI7_RA;
+	<skip>
 }
 
 define pcodeop __spu_shlqbi;
@@ -1234,6 +1268,20 @@ define pcodeop __spu_clgtb;
 {
 	RR_RT = __spu_clgtb(RR_RA, RR_RB);
 }
+
+#	mask = 0xFF;
+#	shift_amount = 0;
+#	if ((RR_RA & mask) > (RR_RB & mask)) goto <set_true>;
+#	RR_RT = (RR_RT & ~mask);
+#	goto <set_mask>;
+#	<set_true>
+#	RR_RT = (RR_RT | mask);
+#	<set_mask>
+#	shift_amount = shift_amount + 8;
+#	mask = mask << shift_amount;
+#	(This needs to loop 16 times to have it perform the function for all 16 bytes in the 128-bit registers)
+
+
 
 define pcodeop __spu_clgtbi;
 
