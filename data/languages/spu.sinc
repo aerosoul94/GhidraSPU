@@ -139,6 +139,7 @@ attach variables [ CH_CA ]
 LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:8 = symbol + RI10_RA;export tmp; }
 targetAddress: symbol   is RI16_I16 [ symbol = inst_start + (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
 absoluteAddress: symbol   is RI16_I16 [ symbol = (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
+LSAabsolute: symbol  is RI16_I16 [ symbol = (RI16_I16 << 2) & 0x3FFF0; ] { export symbol; }
 #loadAddress: symbol     is RI18_I18 [ symbol = RI18_I18*1; ] { export *[ram]:8 symbol; }
 
 #
@@ -151,30 +152,25 @@ absoluteAddress: symbol   is RI16_I16 [ symbol = (RI16_I16 << 2); ] { export *[r
     RI10_RT = *[ram] LSA;
 }
 
-define pcodeop __spu_lqx;
-
 # lqx rt,ra,rb
 :lqx RR_RT,RR_RA,RR_RB is RR_OP=452 & RR_RT & RR_RA & RR_RB
 {
-	#addr:8 = (RR_RA + RR_RB) & 0xFFFFFFF0;
-	addr:8 = RR_RA + RR_RB;
+    #addr:8 = (RR_RA + RR_RB) & 0xFFFFFFF0;
+    addr:8 = RR_RA + RR_RB;
     RR_RT = *[ram]:16 addr;
 }
 
-define pcodeop __spu_lqa;
-
 # lqa rt,symbol
-:lqa RI16_RT,RI16_I16 is RI16_OP=97 & RI16_RT & RI16_I16
+:lqa RI16_RT,LSAabsolute is RI16_OP=97 & RI16_RT & LSAabsolute
 {
-    RI16_RT = __spu_lqa(RI16_I16:4);
+    RI16_RT = *[ram]:16 LSAabsolute;
 }
 
-define pcodeop __spu_lqr;
-
 # lqr rt,symbol
-:lqr RI16_RT,RI16_I16 is RI16_OP=103 & RI16_RT & RI16_I16
+:lqr RI16_RT,RI16_I16 is RI16_OP=103 & RI16_I16 & RI16_RT
 {
-    RI16_RT = __spu_lqr(RI16_I16:4);
+    addr:8 = (inst_start + (RI16_I16 << 2)) & 0x3FFF0;
+    RI16_RT = *[ram]:16 addr;
 }
 
 # stqd rt,symbol(ra)
@@ -183,30 +179,25 @@ define pcodeop __spu_lqr;
     *[ram] LSA = RI10_RT;
 }
 
-define pcodeop __spu_stqx;
-
 # stqx rt,ra,rb
 :stqx RR_RT,RR_RA,RR_RB is RR_OP=324 & RR_RB & RR_RA & RR_RT
 {
-	#addr:8 = (RR_RA + RR_RB) & 0xFFFFFFF0;
-	addr:8 = RR_RA + RR_RB;
+    #addr:8 = (RR_RA + RR_RB) & 0xFFFFFFF0;
+    addr:8 = RR_RA + RR_RB;
     *[ram]:16 addr = RR_RT;
 }
 
-define pcodeop __spu_stqa;
-
 # stqa rt,symbol
-:stqa RI16_RT,RI16_I16 is RI16_OP=65 & RI16_I16 & RI16_RT
+:stqa RI16_RT,LSAabsolute is RI16_OP=65 & LSAabsolute & RI16_RT
 {
-    __spu_stqa(RI16_RT,RI16_I16:4);
+    *[ram]:16 LSAabsolute = RI16_RT;
 }
-
-define pcodeop __spu_stqr;
 
 # stqr rt,symbol
 :stqr RI16_RT,RI16_I16 is RI16_OP=71 & RI16_I16 & RI16_RT
 {
-    __spu_stqr(RI16_RT,RI16_I16:4);
+    addr:8 = (inst_start + (RI16_I16 << 2)) & 0x3FFF0;
+    *[ram]:16 addr = RI16_RT;
 }
 
 define pcodeop __spu_cbd;
@@ -277,23 +268,17 @@ define pcodeop __spu_cdx;
 ## Constant-Formation Instructions
 #
 
-define pcodeop __spu_ilh;
-
 # ilh rt,symbol
 :ilh RI16_RT,RI16_I16 is RI16_OP=131 & RI16_I16 & RI16_RT
 {
-    RI16_RT = __spu_ilh(RI16_RT,RI16_I16:4);
+    RI16_RT = (RI16_I16 << 16) | RI16_I16;
 }
-
-define pcodeop __spu_ilhu;
 
 # ilhu rt,symbol
 :ilhu RI16_RT,RI16_I16 is RI16_OP=130 & RI16_I16 & RI16_RT
 {
-    RI16_RT = __spu_ilhu(RI16_RT,RI16_I16:4);
+    RI16_RT = RI16_I16 << 16;
 }
-
-define pcodeop __spu_il;
 
 # il rt,symbol
 :il RI16_RT,RI16_I16 is RI16_OP=129 & RI16_I16 & RI16_RT
@@ -307,12 +292,10 @@ define pcodeop __spu_il;
     RI18_RT = RI18_I18u;
 }
 
-define pcodeop __spu_iohl;
-
 # iohl rt,symbol
 :iohl RI16_RT,RI16_I16 is RI16_OP=193 & RI16_I16 & RI16_RT
 {
-    RI16_RT = __spu_iohl(RI16_RT,RI16_I16:4);
+    RI16_RT = RI16_RT | RI16_I16;
 }
 
 define pcodeop __spu_fsmbi;
@@ -1346,15 +1329,15 @@ define pcodeop __spu_bisl;
 # brnz rt,symbol
 :brnz RI16_RT,targetAddress is RI16_OP=66 & RI16_I16 & RI16_RT & targetAddress
 {
-	if (RI16_RT != 0)
-		goto targetAddress;
+    if (RI16_RT != 0)
+        goto targetAddress;
 }
 
 # brz rt,symbol
 :brz RI16_RT,targetAddress is RI16_OP=64 & RI16_I16 & RI16_RT & targetAddress
 {
-	if (RI16_RT == 0)
-		goto targetAddress;
+    if (RI16_RT == 0)
+        goto targetAddress;
 }
 
 define pcodeop __spu_brhnz;
@@ -1362,7 +1345,8 @@ define pcodeop __spu_brhnz;
 # brhnz rt,symbol
 :brhnz RI16_RT,targetAddress is RI16_OP=70 & RI16_I16 & RI16_RT & targetAddress
 {
-    __spu_brhnz(RI16_RT, targetAddress);
+    if ((RI16_RT & 0xFFFF) != 0)
+        goto targetAddress;
 }
 
 define pcodeop __spu_brhz;
@@ -1370,7 +1354,8 @@ define pcodeop __spu_brhz;
 # brhz rt,symbol
 :brhz RI16_RT,targetAddress is RI16_OP=68 & RI16_I16 & RI16_RT & targetAddress
 {
-    __spu_brhz(RI16_RT, targetAddress);
+    if ((RI16_RT & 0xFFFF) == 0)
+        goto targetAddress;
 }
 
 #TODO: handle interrupt enable/disable flags
@@ -1378,8 +1363,8 @@ define pcodeop __spu_brhz;
 :biz RR_RT,RR_RA is RR_OP=296 & RR_RB & RR_RA & RR_RA=0 & RR_RT
 {
     if (RR_RT != 0) goto <skip>;
-	return [RR_RA];
-	<skip>
+    return [RR_RA];
+    <skip>
 }
 
 
@@ -1387,32 +1372,56 @@ define pcodeop __spu_brhz;
 :biz RR_RT,RR_RA is RR_OP=296 & RR_RB & RR_RA & RR_RT
 {
     if (RR_RT != 0) goto <skip>;
-	goto [RR_RA];
-	<skip>
+    goto [RR_RA];
+    <skip>
 }
 
-define pcodeop __spu_binz;
+# binz rt,lr
+:binz RR_RT,RR_RA is RR_OP=297 & RR_RB & RR_RA & RR_RA=0 & RR_RT
+{
+    if (RR_RT == 0) goto <skip>;
+    return [RR_RA];
+    <skip>
+}
 
 # binz rt,ra
 :binz RR_RT,RR_RA is RR_OP=297 & RR_RB & RR_RA & RR_RT
 {
-    RR_RT = __spu_binz(RR_RA);
+    if (RR_RT == 0) goto <skip>;
+    goto [RR_RA];
+    <skip>
 }
 
-define pcodeop __spu_bihz;
+# bihz rt,lr
+:bihz RR_RT,RR_RA is RR_OP=298 & RR_RB & RR_RA & RR_RA=0 & RR_RT
+{
+    if ((RR_RT & 0xFFFF) != 0) goto <skip>;
+    return [RR_RA];
+    <skip>
+}
 
 # bihz rt,ra
 :bihz RR_RT,RR_RA is RR_OP=298 & RR_RB & RR_RA & RR_RT
 {
-    RR_RT = __spu_bihz(RR_RA);
+    if ((RR_RT & 0xFFFF) != 0) goto <skip>;
+    goto [RR_RA];
+    <skip>
 }
 
-define pcodeop __spu_bihnz;
+# bihnz rt,lr
+:bihnz RR_RT,RR_RA is RR_OP=299 & RR_RB & RR_RA & RR_RA=0 & RR_RT
+{
+    if ((RR_RT & 0xFFFF) == 0) goto <skip>;
+    return [RR_RA];
+    <skip>
+}
 
 # bihnz rt,ra
 :bihnz RR_RT,RR_RA is RR_OP=299 & RR_RB & RR_RA & RR_RT
 {
-    RR_RT = __spu_bihnz(RR_RA);
+    if ((RR_RT & 0xFFFF) == 0) goto <skip>;
+    goto [RR_RA];
+    <skip>
 }
 
 
@@ -1651,26 +1660,26 @@ define pcodeop __spu_bihnz;
 ## Channel Instructions
 #
 
-define pcodeop __spu_ChannelRead;
+define pcodeop __spu_readch;
 
 #rdch rt,ca
 :rdch CH_RT,CH_CA is CH_OP=13 & CH_CA & CH_RT
 {
-	CH_RT = __spu_ChannelRead(CH_CA);
+    CH_RT = __spu_readch(CH_CA);
 }
 
-define pcodeop __spu_ChannelCapacity;
+define pcodeop __spu_readchcnt;
 
 #rchcnt rt,ca
 :rchcnt CH_RT,CH_CA is CH_OP=15 & CH_CA & CH_RT
 {
-	CH_RT = __spu_ChannelCapacity(CH_CA);
+    CH_RT = __spu_readchcnt(CH_CA);
 }
 
-define pcodeop __spu_ChannelWrite;
+define pcodeop __spu_writech;
 
 #wrch rt,ca
 :wrch CH_RT,CH_CA is CH_OP=269 & CH_CA & CH_RT
 {
-	__spu_ChannelWrite(CH_CA, CH_RT);
+    __spu_writech(CH_CA, CH_RT);
 }
