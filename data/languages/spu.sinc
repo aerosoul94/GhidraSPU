@@ -46,46 +46,46 @@ define token instr(32)
     CH_OP=(21,31)
     CH_CA=(7,13)
     CH_RT=(0,6)
-    
+
     RRR_OP=(28,31)
     RRR_RT=(21,27)
     RRR_RB=(14,20)
     RRR_RA=(7,13)
     RRR_RC=(0,6)
-    
+
     RI7_OP=(21,31)
     RI7_I7=(14,19) signed
     RI7_RA=(7,13)
     RI7_RT=(0,6)
-    
+
     RI8_OP=(22,31)
     RI8_I8=(14,21) signed
     RI8_RA=(7,13)
     RI8_RT=(0,6)
-    
+
     RI10_OP=(24,31)
     RI10_I10=(14,23) signed
     RI10_RA=(7,13)
     RI10_RT=(0,6)
-    
+
     RI16_OP=(23,31)
     RI16_I16=(7,22) signed
     RI16_RT=(0,6)
-    
+
     HBR_OP=(21,31)
     HBR_P=(20,20)
     HBR_0=(16,19)
     HBR_ROH=(14,15)
     HBR_RA=(7,13)
     HBR_ROL=(0,6)
-    
+
     HBRA_OP=(25,31)
     HBRA_R0H=(23,24)
     HBRA_I16=(7,22) signed
     HBRA_R0L=(0,6)
-	
+
     HBRR_OP=(25,31)
-    
+
     RI18_OP=(25,31)
     RI18_I18=(7,24) signed
     RI18_I18u=(7,24)
@@ -541,17 +541,17 @@ define pcodeop __spu_fsmh;
 	if (m1 != 0) goto <s1end>;
 	s1 = 0;
 	<s1end>
-	
+
 	s2 = 0xFFFFFFFF;
 	if (m2 == 0) goto <s2end>;
 	s2 = 0;
 	<s2end>
-	
+
 	s3 = 0xFFFFFFFF;
 	if (m3 == 0) goto <s3end>;
 	s3 = 0;
 	<s3end>
-	
+
 	s4 = 0xFFFFFFFF;
 	if (m4 == 0) goto <s4end>;
 	s4 = 0;
@@ -778,31 +778,65 @@ define pcodeop __spu_shlh;
 # shlh rt,ra,rb
 :shlh RR_RT,RR_RA,RR_RB is RR_OP=95 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_shlh(RR_RA, RR_RB);
+	shift_count = RR_RB % 32;
+	if (shift_count == 0) goto <copy>;
+	if (shift_count > 15) goto <zero_out>;
+	RR_RT = RR_RA << shift_count;
+	goto <skip>;
+	<zero_out>
+	RR_RT = 0;
+	goto <skip>;
+	<copy>
+	RR_RT = RR_RA;
+	<skip>
 }
 
-define pcodeop __spu_shlhi;
-
-# shlhi rt,ra,rb
-:shlhi RR_RT,RR_RA,RR_RB is RR_OP=127 & RR_RB & RR_RA & RR_RT
+# shlhi rt,ra,value
+:shlhi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=127 & RI7_RT & RI7_RA & RI7_I7
 {
-	RR_RT = __spu_shlhi(RR_RA, RR_RB);
+	shift_count = RI7_I7 % 32;
+	if (shift_count == 0) goto <copy>;
+	if (shift_count > 15) goto <zero_out>;
+	RI7_RT = RI7_RA << shift_count;
+	goto <skip>;
+	<zero_out>
+	RI7_RT = 0;
+	goto <skip>;
+	<copy>
+	RI7_RT = RI7_RA;
+	<skip>
 }
-
-define pcodeop __spu_shl;
 
 # shl rt,ra,rb
 :shl RR_RT,RR_RA,RR_RB is RR_OP=91 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_shl(RR_RA, RR_RB);
+	shift_count = RR_RB % 64;
+	if (shift_count == 0) goto <copy>;
+	if (shift_count > 31) goto <zero_out>;
+	RR_RT = RR_RA << shift_count;
+	goto <skip>;
+	<zero_out>
+	RR_RT = 0;
+	goto <skip>;
+	<copy>
+	RR_RT = RR_RA;
+	<skip>
 }
-
-define pcodeop __spu_shli;
 
 # shli rt,ra,value
 :shli RI7_RT,RI7_RA,RI7_I7 is RI7_OP=123 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_shli(RI7_RA, RI7_I7:4);
+	shift_count = RI7_I7 % 64;
+	if (shift_count == 0) goto <copy>;
+	if (shift_count > 31) goto <zero_out>;
+	RI7_RT = RI7_RA << shift_count;
+	goto <skip>;
+	<zero_out>
+	RI7_RT = 0;
+	goto <skip>;
+	<copy>
+	RI7_RT = RI7_RA;
+	<skip>
 }
 
 define pcodeop __spu_shlqbi;
@@ -950,12 +984,16 @@ define pcodeop __spu_rotm;
 	RR_RT = __spu_rotm(RR_RA, RR_RB);
 }
 
-define pcodeop __spu_rotmi;
-
 # rotmi rt,ra,value
 :rotmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=121 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotmi(RI7_RA, RI7_I7:4);
+	shift_count = (0 - RI7_I7) % 64;
+	if (shift_count < 32) goto <shift_right>;
+	RI7_RT = 0;
+	goto <skip>;
+	<shift_right>
+	RI7_RT = RI7_RA >> shift_count;
+	<skip>
 }
 
 define pcodeop __spu_rotqmby;
@@ -1213,6 +1251,20 @@ define pcodeop __spu_clgtb;
 {
 	RR_RT = __spu_clgtb(RR_RA, RR_RB);
 }
+
+#	mask = 0xFF;
+#	shift_amount = 0;
+#	if ((RR_RA & mask) > (RR_RB & mask)) goto <set_true>;
+#	RR_RT = (RR_RT & ~mask);
+#	goto <set_mask>;
+#	<set_true>
+#	RR_RT = (RR_RT | mask);
+#	<set_mask>
+#	shift_amount = shift_amount + 8;
+#	mask = mask << shift_amount;
+#	(This needs to loop 16 times to have it perform the function for all 16 bytes in the 128-bit registers)
+
+
 
 define pcodeop __spu_clgtbi;
 
