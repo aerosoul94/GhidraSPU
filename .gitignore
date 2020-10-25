@@ -1,1 +1,9 @@
+# compiled sla
 data/languages/spu.sla
+
+# gradle
+.project
+.classpath
+.gradle/
+build/
+dist/
