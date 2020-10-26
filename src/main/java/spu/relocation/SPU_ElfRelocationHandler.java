@@ -89,13 +89,13 @@ public class SPU_ElfRelocationHandler extends ElfRelocationHandler {
             case SPU_ElfRelocationConstants.R_SPU_REL9:
                 newValue = (symbolValue + addend - offset) >> 2;
                 newValue = (oldValue & ~SPU_ElfRelocationConstants.SPU_I9) | 
-                    ((newValue & 0x7f) | ((newValue & 0x180) << 23));
+                    ((newValue & 0x7f) | ((newValue & 0x180) << 16));
                 memory.setInt(relocationAddress, newValue);
                 break;
             case SPU_ElfRelocationConstants.R_SPU_REL9I:
                 newValue = (symbolValue + addend - offset) >> 2;
                 newValue = (oldValue & ~SPU_ElfRelocationConstants.SPU_I9I) | 
-                    ((newValue & 0x7f) | ((newValue & 0x180) << 14));
+                    ((newValue & 0x7f) | ((newValue & 0x180) << 7));
                 memory.setInt(relocationAddress, newValue);
                 break;
             case SPU_ElfRelocationConstants.R_SPU_ADDR16X:
@@ -107,9 +107,8 @@ public class SPU_ElfRelocationHandler extends ElfRelocationHandler {
             case SPU_ElfRelocationConstants.R_SPU_ADD_PIC:
                 // ??? change a rt,ra,rb to ai rt,ra,0
                 // op[0] = 0x1c, op[1] = 0x00, op[2] &= 0x3f
-                newValue = (oldValue & ~0xff000000) | (0x1c << 24);
-                newValue = (newValue & ~0x00ff0000);
-                newValue = (newValue & ~0x0000ff00) | ((newValue & 0x0000ff00) & (0x3f << 8));
+                newValue = (oldValue & ~0xffff0000) | (0x1c << 24);
+                newValue = (newValue & ~0x0000ff00) | (newValue & 0x00003f00);
                 memory.setInt(relocationAddress, newValue);
                 break;
             /* Currently unhandled relocations */
