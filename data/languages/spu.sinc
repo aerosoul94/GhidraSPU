@@ -303,7 +303,13 @@ define pcodeop __spu_fsmbi;
 # fsmbi rt,symbol
 :fsmbi RI16_RT,RI16_I16 is RI16_OP=101 & RI16_I16 & RI16_RT
 {
-    RI16_RT = __spu_fsmbi(RI16_RT,RI16_I16:4);
+    mask:4 = RI16_I16;
+    if (mask == 0) goto <zero_out>;
+    RI16_RT = __spu_fsmbi(mask);
+    goto <skip>;
+    <zero_out>
+    RI16_RT = 0;
+    <skip>
 }
 
 
@@ -811,15 +817,11 @@ define pcodeop __spu_shlh;
 :shl RR_RT,RR_RA,RR_RB is RR_OP=91 & RR_RB & RR_RA & RR_RT
 {
 	shift_count = RR_RB % 64;
-	if (shift_count == 0) goto <copy>;
 	if (shift_count > 31) goto <zero_out>;
 	RR_RT = RR_RA << shift_count;
 	goto <skip>;
 	<zero_out>
 	RR_RT = 0;
-	goto <skip>;
-	<copy>
-	RR_RT = RR_RA;
 	<skip>
 }
 
@@ -906,22 +908,23 @@ define pcodeop __spu_rot;
 # rot rt,ra,rb
 :rot RR_RT,RR_RA,RR_RB is RR_OP=88 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rot(RR_RA, RR_RB);
+	rotby = RR_RB & 0x1F;
+	RR_RT = (RR_RA << rotby) | (RR_RA >> (32 - rotby));
 }
-
-define pcodeop __spu_roti;
 
 # roti rt,ra,value
 :roti RI7_RT,RI7_RA,RI7_I7 is RI7_OP=120 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_roti(RI7_RA, RI7_I7:4);
+	rotby = RI7_I7 & 0x1F;
+	RI7_RT = (RI7_RA << rotby) | (RI7_RA >> (32 - rotby));
 }
+
+define pcodeop __spu_rotqby;
 
 # rotqby rt,ra,rb
 :rotqby RR_RT,RR_RA,RR_RB is RR_OP=476 & RR_RT & RR_RA & RR_RB
 {
-	rotby = RR_RB & 0xF;
-	RR_RT = (RR_RA << rotby) | (RR_RA >> (32 - rotby));
+	RR_RT = __spu_rotqby(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rotqbyi;
