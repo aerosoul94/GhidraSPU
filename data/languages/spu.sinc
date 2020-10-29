@@ -346,33 +346,31 @@ define pcodeop __spu_fsmbi;
 # sfh rt,ra,rb
 :sfh RR_RT,RR_RA,RR_RB is RR_OP=72 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = (RR_RA - RR_RB) & 0xFFFF;
+	RR_RT = (RR_RB - RR_RA) & 0xFFFF;
 }
 
 # sfhi rt,ra,value
 :sfhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=13 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_RA - RI10_I10) & 0xFFFF;
+	RI10_RT = (RI10_I10 - RI10_RA) & 0xFFFF;
 }
 
 # sf rt,ra,rb
 :sf RR_RT,RR_RA,RR_RB is RR_OP=64 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = (RR_RA - RR_RB) & 0xFFFFFFFF;
+	RR_RT = (RR_RB - RR_RA) & 0xFFFFFFFF;
 }
 
 # sfi rt,ra,value
 :sfi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=12 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_RA - RI10_I10) & 0xFFFFFFFF;
+	RI10_RT = (RI10_I10 - RI10_RA) & 0xFFFFFFFF;
 }
-
-define pcodeop __spu_addx;
 
 # addx rt,ra,rb
 :addx RR_RT,RR_RA,RR_RB is RR_OP=832 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_addx(RR_RA, RR_RB);
+	RR_RT = (RR_RA + RR_RB + (RR_RT & 1)) & 0xFFFFFFFF;
 }
 
 define pcodeop __spu_cg;
@@ -391,12 +389,10 @@ define pcodeop __spu_cgx;
 	RR_RT = __spu_cgx(RR_RA, RR_RB);
 }
 
-define pcodeop __spu_sfx;
-
 # sfx rt,ra,rb
 :sfx RR_RT,RR_RA,RR_RB is RR_OP=833 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_sfx(RR_RA, RR_RB);
+	RR_RT = (RR_RB - RR_RA + (RR_RT & 1)) & 0xFFFFFFFF;
 }
 
 define pcodeop __spu_bg;
