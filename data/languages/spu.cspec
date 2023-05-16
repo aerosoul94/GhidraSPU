@@ -19,7 +19,7 @@
     <stackpointer register="sp" space="ram"/>
     
     <default_proto>
-        <prototype name="__stdcall" stackshift="0" extrapop="0">
+        <prototype name="__stdcall" stackshift="0" extrapop="0" strategy="register">
             <input>
                 <pentry minsize="1" maxsize="8" extension="sign">
                     <register name="r3"/>

@@ -22,19 +22,25 @@ define register offset=0 size=8 [
 define register offset=0x400 size=8 pc;
 
 define register offset=0x800 size=8 [
-    ch0 ch1 ch2 ch3 ch4 ch5 ch6 ch7 ch8 ch9
-    ch10 ch11 ch12 ch13 ch14 ch15 ch16 ch17 ch18 ch19
-    ch20 ch21 ch22 ch23 ch24 ch25 ch26 ch27 ch28 ch29
-    ch30 ch31 ch32 ch33 ch34 ch35 ch36 ch37 ch38 ch39
-    ch40 ch41 ch42 ch43 ch44 ch45 ch46 ch47 ch48 ch49
-    ch50 ch51 ch52 ch53 ch54 ch55 ch56 ch57 ch58 ch59
-    ch60 ch61 ch62 ch63 ch64 ch65 ch66 ch67 ch68 ch69
-    ch70 ch71 ch72 ch73 ch74 ch75 ch76 ch77 ch78 ch79
-    ch80 ch81 ch82 ch83 ch84 ch85 ch86 ch87 ch88 ch89
-    ch90 ch91 ch92 ch93 ch94 ch95 ch96 ch97 ch98 ch99
-    ch100 ch101 ch102 ch103 ch104 ch105 ch106 ch107 ch108 ch109
-    ch110 ch111 ch112 ch113 ch114 ch115 ch116 ch117 ch118 ch119
-    ch120 ch121 ch122 ch123 ch124 ch125 ch126 ch127
+    SPU_RdEventStat SPU_WrEventMask SPU_WrEventAck SPU_RdSigNotify1
+    SPU_RdSigNotify2 ch5 ch6 SPU_WrDec SPU_RdDec
+    MFC_WrMSSyncReq ch10 SPU_RdEventMask MFC_RdTagMask SPU_RdMachStat
+    SPU_WrSRR0 SPU_RdSRR0 MFC_LSA MFC_EAH MFC_EAL MFC_Size
+    MFC_TagID MFC_Cmd MFC_WrTagMask MFC_WrTagUpdate MFC_RdTagStat
+    MFC_RdListStallStat MFC_WrListStallAck MFC_RdAtomicStat
+    SPU_WrOutMbox SPU_RdInMbox SPU_WrOutIntrMbox ch31 ch32
+    ch33 ch34 ch35 ch36 ch37 ch38 ch39 ch40
+    ch41 ch42 ch43 ch44 ch45 ch46 ch47 ch48
+    ch49 ch50 ch51 ch52 ch53 ch54 ch55 ch56
+    ch57 ch58 ch59 ch60 ch61 ch62 ch63 ch64
+    ch65 ch66 ch67 ch68 SPU_Set_Bkmk_Tag SPU_PM_Start_Ev SPU_PM_Stop_Ev ch72
+    ch73 ch74 ch75 ch76 ch77 ch78 ch79 ch80
+    ch81 ch82 ch83 ch84 ch85 ch86 ch87 ch88
+    ch89 ch90 ch91 ch92 ch93 ch94 ch95 ch96
+    ch97 ch98 ch99 ch100 ch101 ch102 ch103 ch104
+    ch105 ch106 ch107 ch108 ch109 ch110 ch111 ch112
+    ch113 ch114 ch115 ch116 ch117 ch118 ch119 ch120
+    ch121 ch122 ch123 ch124 ch125 ch126 ch127
 ];
 
 define token instr(32)
@@ -97,7 +103,7 @@ define token instr(32)
 
 attach variables [
     RR_RB RR_RA RR_RT
-	CH_RT
+    CH_RT
     RRR_RT RRR_RB RRR_RA RRR_RC
     RI7_RA RI7_RT
     RI10_RA RI10_RT
@@ -122,24 +128,30 @@ attach variables [
 
 attach variables [ CH_CA ]
 [
-    ch0 ch1 ch2 ch3 ch4 ch5 ch6 ch7 ch8 ch9
-    ch10 ch11 ch12 ch13 ch14 ch15 ch16 ch17 ch18 ch19
-    ch20 ch21 ch22 ch23 ch24 ch25 ch26 ch27 ch28 ch29
-    ch30 ch31 ch32 ch33 ch34 ch35 ch36 ch37 ch38 ch39
-    ch40 ch41 ch42 ch43 ch44 ch45 ch46 ch47 ch48 ch49
-    ch50 ch51 ch52 ch53 ch54 ch55 ch56 ch57 ch58 ch59
-    ch60 ch61 ch62 ch63 ch64 ch65 ch66 ch67 ch68 ch69
-    ch70 ch71 ch72 ch73 ch74 ch75 ch76 ch77 ch78 ch79
-    ch80 ch81 ch82 ch83 ch84 ch85 ch86 ch87 ch88 ch89
-    ch90 ch91 ch92 ch93 ch94 ch95 ch96 ch97 ch98 ch99
-    ch100 ch101 ch102 ch103 ch104 ch105 ch106 ch107 ch108 ch109
-    ch110 ch111 ch112 ch113 ch114 ch115 ch116 ch117 ch118 ch119
-    ch120 ch121 ch122 ch123 ch124 ch125 ch126 ch127
+    SPU_RdEventStat SPU_WrEventMask SPU_WrEventAck SPU_RdSigNotify1
+    SPU_RdSigNotify2 ch5 ch6 SPU_WrDec SPU_RdDec
+    MFC_WrMSSyncReq ch10 SPU_RdEventMask MFC_RdTagMask SPU_RdMachStat
+    SPU_WrSRR0 SPU_RdSRR0 MFC_LSA MFC_EAH MFC_EAL MFC_Size
+    MFC_TagID MFC_Cmd MFC_WrTagMask MFC_WrTagUpdate MFC_RdTagStat
+    MFC_RdListStallStat MFC_WrListStallAck MFC_RdAtomicStat
+    SPU_WrOutMbox SPU_RdInMbox SPU_WrOutIntrMbox ch31 ch32
+    ch33 ch34 ch35 ch36 ch37 ch38 ch39 ch40
+    ch41 ch42 ch43 ch44 ch45 ch46 ch47 ch48
+    ch49 ch50 ch51 ch52 ch53 ch54 ch55 ch56
+    ch57 ch58 ch59 ch60 ch61 ch62 ch63 ch64
+    ch65 ch66 ch67 ch68 SPU_Set_Bkmk_Tag SPU_PM_Start_Ev SPU_PM_Stop_Ev ch72
+    ch73 ch74 ch75 ch76 ch77 ch78 ch79 ch80
+    ch81 ch82 ch83 ch84 ch85 ch86 ch87 ch88
+    ch89 ch90 ch91 ch92 ch93 ch94 ch95 ch96
+    ch97 ch98 ch99 ch100 ch101 ch102 ch103 ch104
+    ch105 ch106 ch107 ch108 ch109 ch110 ch111 ch112
+    ch113 ch114 ch115 ch116 ch117 ch118 ch119 ch120
+    ch121 ch122 ch123 ch124 ch125 ch126 ch127
 ];
 
 # we know that the LSA must be 16 bytes aligned, but it f*s up the decompiler output
-#LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:4 = (symbol + RI10_RA) & 0xFFFFFFF0;export tmp; }
-LSA: symbol(RI10_RA)	is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:4 = trunc(symbol + RI10_RA);export tmp; }
+#LSA: symbol(RI10_RA)    is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:4 = (symbol + RI10_RA) & 0xFFFFFFF0;export tmp; }
+LSA: symbol(RI10_RA)    is RI10_I10 & RI10_RA [ symbol = RI10_I10 << 4; ] { tmp:4 = trunc(symbol + RI10_RA);export tmp; }
 targetAddress: symbol   is RI16_I16 [ symbol = inst_start + (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
 absoluteAddress: symbol   is RI16_I16 [ symbol = (RI16_I16 << 2); ] { export *[ram]:4 symbol; }
 LSAabsolute: symbol  is RI16_I16 [ symbol = (RI16_I16 << 2) & 0x3FFF0; ] { tmp:4 = symbol:4; export tmp; }
@@ -311,56 +323,56 @@ define pcodeop __spu_fsmbi;
     RI16_RT = __spu_fsmbi(mask);
     goto inst_next;
     <mask_64>
-	m1 = mask & 0x1;
-	m2 = mask & 0x2;
-	m3 = mask & 0x4;
-	m4 = mask & 0x8;
-	m5 = mask & 0x10;
-	m6 = mask & 0x20;
-	m7 = mask & 0x40;
-	m8 = mask & 0x80;
+    m1 = mask & 0x1;
+    m2 = mask & 0x2;
+    m3 = mask & 0x4;
+    m4 = mask & 0x8;
+    m5 = mask & 0x10;
+    m6 = mask & 0x20;
+    m7 = mask & 0x40;
+    m8 = mask & 0x80;
 
-	s1:8 = 0xFF;
-	if (m1 != 0) goto <s1end>;
-	s1 = 0;
-	<s1end>
+    s1:8 = 0xFF;
+    if (m1 != 0) goto <s1end>;
+    s1 = 0;
+    <s1end>
 
-	s2:8 = 0xFF;
-	if (m2 != 0) goto <s2end>;
-	s2 = 0;
-	<s2end>
+    s2:8 = 0xFF;
+    if (m2 != 0) goto <s2end>;
+    s2 = 0;
+    <s2end>
 
-	s3:8 = 0xFF;
-	if (m3 != 0) goto <s3end>;
-	s3 = 0;
-	<s3end>
+    s3:8 = 0xFF;
+    if (m3 != 0) goto <s3end>;
+    s3 = 0;
+    <s3end>
 
-	s4:8 = 0xFF;
-	if (m4 != 0) goto <s4end>;
-	s4 = 0;
-	<s4end>
+    s4:8 = 0xFF;
+    if (m4 != 0) goto <s4end>;
+    s4 = 0;
+    <s4end>
 
-	s5:8 = 0xFF;
-	if (m5 != 0) goto <s5end>;
-	s5 = 0;
-	<s5end>
+    s5:8 = 0xFF;
+    if (m5 != 0) goto <s5end>;
+    s5 = 0;
+    <s5end>
 
-	s6:8 = 0xFF;
-	if (m6 != 0) goto <s6end>;
-	s6 = 0;
-	<s6end>
+    s6:8 = 0xFF;
+    if (m6 != 0) goto <s6end>;
+    s6 = 0;
+    <s6end>
 
-	s7:8 = 0xFF;
-	if (m7 != 0) goto <s7end>;
-	s7 = 0;
-	<s7end>
+    s7:8 = 0xFF;
+    if (m7 != 0) goto <s7end>;
+    s7 = 0;
+    <s7end>
 
-	s8:8 = 0xFF;
-	if (m8 != 0) goto <s8end>;
-	s8 = 0;
-	<s8end>
+    s8:8 = 0xFF;
+    if (m8 != 0) goto <s8end>;
+    s8 = 0;
+    <s8end>
 
-	RI16_RT = s1 | (s2 << 8) | (s3 << 16) | (s4 << 24) | (s5 << 32) | (s6 << 40) | (s7 << 48) | (s8 << 56);
+    RI16_RT = s1 | (s2 << 8) | (s3 << 16) | (s4 << 24) | (s5 << 32) | (s6 << 40) | (s7 << 48) | (s8 << 56);
 }
 
 
@@ -371,57 +383,57 @@ define pcodeop __spu_fsmbi;
 # ah rt,ra,rb
 :ah RR_RT,RR_RA,RR_RB is RR_OP=200 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = (RR_RA + RR_RB) & 0xFFFF;
+    RR_RT = (RR_RA + RR_RB) & 0xFFFF;
 }
 
 # ahi rt,ra,value
 :ahi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=29 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_RA + RI10_I10) & 0xFFFF;
+    RI10_RT = (RI10_RA + RI10_I10) & 0xFFFF;
 }
 
 # a rt,ra,rb
 :a RR_RT,RR_RA,RR_RB is RR_OP=192 & RR_RT & RR_RA & RR_RB
 {
-	#RR_RT = (RR_RA + RR_RB) & 0xFFFFFFFF;
-	RR_RT = RR_RA + RR_RB;
+    #RR_RT = (RR_RA + RR_RB) & 0xFFFFFFFF;
+    RR_RT = RR_RA + RR_RB;
 }
 
 # ai rt,ra,value
 :ai RI10_RT,RI10_RA,RI10_I10 is RI10_OP=28 & RI10_RT & RI10_RA & RI10_I10
 {
-	#RI10_RT = (RI10_RA + RI10_I10) & 0xFFFFFFFF;
-	RI10_RT = RI10_RA + RI10_I10;
+    #RI10_RT = (RI10_RA + RI10_I10) & 0xFFFFFFFF;
+    RI10_RT = RI10_RA + RI10_I10;
 }
 
 # sfh rt,ra,rb
 :sfh RR_RT,RR_RA,RR_RB is RR_OP=72 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = (RR_RB - RR_RA) & 0xFFFF;
+    RR_RT = (RR_RB - RR_RA) & 0xFFFF;
 }
 
 # sfhi rt,ra,value
 :sfhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=13 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_I10 - RI10_RA) & 0xFFFF;
+    RI10_RT = (RI10_I10 - RI10_RA) & 0xFFFF;
 }
 
 # sf rt,ra,rb
 :sf RR_RT,RR_RA,RR_RB is RR_OP=64 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = (RR_RB - RR_RA) & 0xFFFFFFFF;
+    RR_RT = (RR_RB - RR_RA) & 0xFFFFFFFF;
 }
 
 # sfi rt,ra,value
 :sfi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=12 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_I10 - RI10_RA) & 0xFFFFFFFF;
+    RI10_RT = (RI10_I10 - RI10_RA) & 0xFFFFFFFF;
 }
 
 # addx rt,ra,rb
 :addx RR_RT,RR_RA,RR_RB is RR_OP=832 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = (RR_RA + RR_RB + (RR_RT & 1)) & 0xFFFFFFFF;
+    RR_RT = (RR_RA + RR_RB + (RR_RT & 1)) & 0xFFFFFFFF;
 }
 
 define pcodeop __spu_cg;
@@ -429,30 +441,30 @@ define pcodeop __spu_cg;
 # cg rt,ra,rb
 :cg RR_RT,RR_RA,RR_RB is RR_OP=194 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = zext(carry(RR_RA:4, RR_RB:4));
+    RR_RT = zext(carry(RR_RA:4, RR_RB:4));
 }
 
 # cgx rt,ra,rb
 :cgx RR_RT,RR_RA,RR_RB is RR_OP=834 & RR_RT & RR_RA & RR_RB
 {
-	RA = RR_RA:4;
-	RB = RR_RB:4;
-	RT = RR_RT:4;
-	RR_RT = zext(carry(RA, RB) | carry(RA + RB, RT & 1));
+    RA = RR_RA:4;
+    RB = RR_RB:4;
+    RT = RR_RT:4;
+    RR_RT = zext(carry(RA, RB) | carry(RA + RB, RT & 1));
 }
 
 # sfx rt,ra,rb
 :sfx RR_RT,RR_RA,RR_RB is RR_OP=833 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = (RR_RB - RR_RA + (RR_RT & 1)) & 0xFFFFFFFF;
+    RR_RT = (RR_RB - RR_RA + (RR_RT & 1)) & 0xFFFFFFFF;
 }
 
 # bg rt,ra,rb
 :bg RR_RT,RR_RA,RR_RB is RR_OP=66 & RR_RT & RR_RA & RR_RB
 {
-	RA = RR_RA:4;
-	RA = ~RA;
-	RR_RT = zext(carry(RA, RR_RB:4));
+    RA = RR_RA:4;
+    RA = ~RA;
+    RR_RT = zext(carry(RA, RR_RB:4));
 }
 
 define pcodeop __spu_bgx;
@@ -460,11 +472,11 @@ define pcodeop __spu_bgx;
 # bgx rt,ra,rb
 :bgx RR_RT,RR_RA,RR_RB is RR_OP=835 & RR_RT & RR_RA & RR_RB
 {
-	RA = RR_RA:4;
-	RA = ~RA;
-	RB = RR_RB:4;
-	RT = RR_RT:4;
-	RR_RT = zext(carry(RA, RB) | carry(RA + RB, RT & 1));
+    RA = RR_RA:4;
+    RA = ~RA;
+    RB = RR_RB:4;
+    RT = RR_RT:4;
+    RR_RT = zext(carry(RA, RB) | carry(RA + RB, RT & 1));
 }
 
 define pcodeop __spu_mpy;
@@ -472,7 +484,7 @@ define pcodeop __spu_mpy;
 # mpy rt,ra,rb
 :mpy RR_RT,RR_RA,RR_RB is RR_OP=964 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_mpy(RR_RA, RR_RB);
+    RR_RT = __spu_mpy(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_mpyu;
@@ -480,7 +492,7 @@ define pcodeop __spu_mpyu;
 # mpyu rt,ra,rb
 :mpyu RR_RT,RR_RA,RR_RB is RR_OP=972 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_mpyu(RR_RA, RR_RB);
+    RR_RT = __spu_mpyu(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_mpyi;
@@ -488,7 +500,7 @@ define pcodeop __spu_mpyi;
 # mpyi rt,ra,value
 :mpyi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=116 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_mpyi(RI10_RA, RI10_I10:4);
+    RI10_RT = __spu_mpyi(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_mpyui;
@@ -496,7 +508,7 @@ define pcodeop __spu_mpyui;
 # mpyui rt,ra,value
 :mpyui RI10_RT,RI10_RA,RI10_I10 is RI10_OP=117 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_mpyui(RI10_RA, RI10_I10:4);
+    RI10_RT = __spu_mpyui(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_mpya;
@@ -504,7 +516,7 @@ define pcodeop __spu_mpya;
 # mpya rt,ra,rb,rc
 :mpya RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=12 & RRR_RT & RRR_RB & RRR_RA & RRR_RC
 {
-	RRR_RT = __spu_mpya(RRR_RA, RRR_RB, RRR_RC);
+    RRR_RT = __spu_mpya(RRR_RA, RRR_RB, RRR_RC);
 }
 
 define pcodeop __spu_mpyh;
@@ -512,7 +524,7 @@ define pcodeop __spu_mpyh;
 # mpyh rt,ra,rb
 :mpyh RR_RT,RR_RA,RR_RB is RR_OP=965 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_mpyh(RR_RA, RR_RB);
+    RR_RT = __spu_mpyh(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_mpys;
@@ -520,7 +532,7 @@ define pcodeop __spu_mpys;
 # mpys rt,ra,rb
 :mpys RR_RT,RR_RA,RR_RB is RR_OP=967 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_mpys(RR_RA, RR_RB);
+    RR_RT = __spu_mpys(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_mpyhh;
@@ -528,7 +540,7 @@ define pcodeop __spu_mpyhh;
 # mpyhh rt,ra,rb
 :mpyhh RR_RT,RR_RA,RR_RB is RR_OP=966 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_mpyhh(RR_RA, RR_RB);
+    RR_RT = __spu_mpyhh(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_mpyhha;
@@ -536,7 +548,7 @@ define pcodeop __spu_mpyhha;
 # mpyhha rt,ra,rb
 :mpyhha RR_RT,RR_RA,RR_RB is RR_OP=838 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_mpyhha(RR_RA, RR_RB);
+    RR_RT = __spu_mpyhha(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_mpyhhu;
@@ -544,7 +556,7 @@ define pcodeop __spu_mpyhhu;
 # mpyhhu rt,ra,rb
 :mpyhhu RR_RT,RR_RA,RR_RB is RR_OP=974 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_mpyhhu(RR_RA, RR_RB);
+    RR_RT = __spu_mpyhhu(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_mpyhhau;
@@ -552,7 +564,7 @@ define pcodeop __spu_mpyhhau;
 # mpyhhau rt,ra,rb
 :mpyhhau RR_RT,RR_RA,RR_RB is RR_OP=846 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_mpyhhau(RR_RA, RR_RB);
+    RR_RT = __spu_mpyhhau(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_clz;
@@ -560,7 +572,7 @@ define pcodeop __spu_clz;
 # clz rt,ra
 :clz RI7_RT,RI7_RA is RI7_OP=677 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	RI7_RT = __spu_clz(RI7_RA);
+    RI7_RT = __spu_clz(RI7_RA);
 }
 
 define pcodeop __spu_cntb;
@@ -568,7 +580,7 @@ define pcodeop __spu_cntb;
 # cntb rt,ra
 :cntb RI7_RT,RI7_RA is RI7_OP=692 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	RI7_RT = __spu_cntb(RI7_RA);
+    RI7_RT = __spu_cntb(RI7_RA);
 }
 
 define pcodeop __spu_fsmb;
@@ -576,7 +588,7 @@ define pcodeop __spu_fsmb;
 # fsmb rt,ra
 :fsmb RI7_RT,RI7_RA is RI7_OP=438 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	RI7_RT = __spu_fsmb(RI7_RA);
+    RI7_RT = __spu_fsmb(RI7_RA);
 }
 
 define pcodeop __spu_fsmh;
@@ -584,38 +596,38 @@ define pcodeop __spu_fsmh;
 # fsmh rt,ra
 :fsmh RI7_RT,RI7_RA is RI7_OP=437 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	RI7_RT = __spu_fsmh(RI7_RA);
+    RI7_RT = __spu_fsmh(RI7_RA);
 }
 
 # fsm rt,ra
 :fsm RI7_RT,RI7_RA is RI7_OP=436 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	m1 = RI7_RA & 0x1;
-	m2 = RI7_RA & 0x2;
-	m3 = RI7_RA & 0x4;
-	m4 = RI7_RA & 0x8;
+    m1 = RI7_RA & 0x1;
+    m2 = RI7_RA & 0x2;
+    m3 = RI7_RA & 0x4;
+    m4 = RI7_RA & 0x8;
 
-	s1 = 0xFFFFFFFF;
-	if (m1 != 0) goto <s1end>;
-	s1 = 0;
-	<s1end>
+    s1 = 0xFFFFFFFF;
+    if (m1 != 0) goto <s1end>;
+    s1 = 0;
+    <s1end>
 
-	s2 = 0xFFFFFFFF;
-	if (m2 == 0) goto <s2end>;
-	s2 = 0;
-	<s2end>
+    s2 = 0xFFFFFFFF;
+    if (m2 == 0) goto <s2end>;
+    s2 = 0;
+    <s2end>
 
-	s3 = 0xFFFFFFFF;
-	if (m3 == 0) goto <s3end>;
-	s3 = 0;
-	<s3end>
+    s3 = 0xFFFFFFFF;
+    if (m3 == 0) goto <s3end>;
+    s3 = 0;
+    <s3end>
 
-	s4 = 0xFFFFFFFF;
-	if (m4 == 0) goto <s4end>;
-	s4 = 0;
-	<s4end>
+    s4 = 0xFFFFFFFF;
+    if (m4 == 0) goto <s4end>;
+    s4 = 0;
+    <s4end>
 
-	RI7_RT = s1 | (s2 << 32) | (s3 << 64) | (s4 << 96);
+    RI7_RT = s1 | (s2 << 32) | (s3 << 64) | (s4 << 96);
 }
 
 define pcodeop __spu_gbb;
@@ -623,7 +635,7 @@ define pcodeop __spu_gbb;
 # gbb rt,ra
 :gbb RI7_RT,RI7_RA is RI7_OP=434 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	RI7_RT = __spu_gbb(RI7_RA);
+    RI7_RT = __spu_gbb(RI7_RA);
 }
 
 define pcodeop __spu_gbh;
@@ -631,7 +643,7 @@ define pcodeop __spu_gbh;
 # gbh rt,ra
 :gbh RI7_RT,RI7_RA is RI7_OP=433 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	RI7_RT = __spu_gbh(RI7_RA);
+    RI7_RT = __spu_gbh(RI7_RA);
 }
 
 define pcodeop __spu_gb;
@@ -639,7 +651,7 @@ define pcodeop __spu_gb;
 # gb rt,ra
 :gb RI7_RT,RI7_RA is RI7_OP=432 & RI7_I7=0 & RI7_RA & RI7_RT
 {
-	RI7_RT = __spu_gb(RI7_RA);
+    RI7_RT = __spu_gb(RI7_RA);
 }
 
 define pcodeop __spu_avgb;
@@ -647,7 +659,7 @@ define pcodeop __spu_avgb;
 # avgb rt,ra,rb
 :avgb RR_RT,RR_RA,RR_RB is RR_OP=211 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_avgb(RR_RA, RR_RB);
+    RR_RT = __spu_avgb(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_absdb;
@@ -655,7 +667,7 @@ define pcodeop __spu_absdb;
 # absdb rt,ra,rb
 :absdb RR_RT,RR_RA,RR_RB is RR_OP=83 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_absdb(RR_RA, RR_RB);
+    RR_RT = __spu_absdb(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_sumb;
@@ -663,28 +675,28 @@ define pcodeop __spu_sumb;
 # sumb rt,ra,rb
 :sumb RR_RT,RR_RA,RR_RB is RR_OP=595 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_sumb(RR_RA, RR_RB);
+    RR_RT = __spu_sumb(RR_RA, RR_RB);
 }
 
 # xsbh rt,ra
 :xsbh RR_RT,RR_RA is RR_OP=694 & RR_RB=0 & RR_RA & RR_RT
 {
-	tmp:2 = sext(RR_RA:1);
-	RR_RT = zext(tmp);
+    tmp:2 = sext(RR_RA:1);
+    RR_RT = zext(tmp);
 }
 
 # xshw rt,ra
 :xshw RR_RT,RR_RA is RR_OP=686 & RR_RB=0 & RR_RA & RR_RT
 {
-	tmp:4 = sext(RR_RA:2);
-	RR_RT = zext(tmp);
+    tmp:4 = sext(RR_RA:2);
+    RR_RT = zext(tmp);
 }
 
 # xswd rt,ra
 :xswd RR_RT,RR_RA is RR_OP=678 & RR_RB=0 & RR_RA & RR_RT
 {
-	tmp:8 = sext(RR_RA:4);
-	RR_RT = tmp;
+    tmp:8 = sext(RR_RA:4);
+    RR_RT = tmp;
 }
 
 # and rt,ra,rb
@@ -703,9 +715,9 @@ define pcodeop __spu_sumb;
 # TODO: IS THIS IMPLEMENTATION RIGHT?
 :andbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=22 & RI10_RT & RI10_RA & RI10_I10
 {
-	b:8 = RI10_I10 & 0xFF;
-	bbbb:8 = b << 24 | b << 16 | b << 8 | b;
-	RI10_RT = RI10_RA & bbbb;
+    b:8 = RI10_I10 & 0xFF;
+    bbbb:8 = b << 24 | b << 16 | b << 8 | b;
+    RI10_RT = RI10_RA & bbbb;
 }
 
 # andhi rt,ra,value
@@ -717,11 +729,11 @@ define pcodeop __spu_sumb;
 # andi rt,ra,value
 :andi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=20 & RI10_RT & RI10_RA & RI10_I10
 {
-	#if (RI10_I10:4 == 0xff) goto <zext_byte>;
+    #if (RI10_I10:4 == 0xff) goto <zext_byte>;
     RI10_RT = (RI10_RA & RI10_I10) & 0xFFFFFFFF;
-	#goto inst_next;
-	#<zext_byte>
-	#RI10_I10 = zext(RI10_RA:1);
+    #goto inst_next;
+    #<zext_byte>
+    #RI10_I10 = zext(RI10_RA:1);
 }
 
 # or rt,ra,rb
@@ -740,9 +752,9 @@ define pcodeop __spu_sumb;
 # TODO: IS THIS IMPLEMENTATION RIGHT?
 :orbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=6 & RI10_RT & RI10_RA & RI10_I10
 {
-	b:8 = RI10_I10 & 0xFF;
-	bbbb:8 = b << 24 | b << 16 | b << 8 | b;
-	RI10_RT = RI10_RA | bbbb;
+    b:8 = RI10_I10 & 0xFF;
+    bbbb:8 = b << 24 | b << 16 | b << 8 | b;
+    RI10_RT = RI10_RA | bbbb;
 }
 
 # orhi rt,ra,value
@@ -761,62 +773,62 @@ define pcodeop __spu_sumb;
 # ori rt,ra,value
 :ori RI10_RT,RI10_RA,RI10_I10 is RI10_OP=4 & RI10_RT & RI10_RA & RI10_I10
 {
-	#RI10_RT = (RI10_RA | RI10_I10) & 0xFFFFFFFF;
-	RI10_RT = RI10_RA | RI10_I10;
+    #RI10_RT = (RI10_RA | RI10_I10) & 0xFFFFFFFF;
+    RI10_RT = RI10_RA | RI10_I10;
 }
 
 # orx rt,ra
 :orx RR_RT,RR_RA is RR_OP=496 & RR_RB=0 & RR_RA & RR_RT
 {
-	RR_RT = (RR_RA | (RR_RA >> 32) | (RR_RA >> 64) | (RR_RA >> 96)) & 0xFFFFFFFF;
+    RR_RT = (RR_RA | (RR_RA >> 32) | (RR_RA >> 64) | (RR_RA >> 96)) & 0xFFFFFFFF;
 }
 
 # xor rt,ra,rb
 :xor RR_RT,RR_RA,RR_RB is RR_OP=577 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = RR_RA ^ RR_RB;
+    RR_RT = RR_RA ^ RR_RB;
 }
 
 # xorbi rt,ra,value
 :xorbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=70 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_RA ^ RI10_I10) & 0xFF;
+    RI10_RT = (RI10_RA ^ RI10_I10) & 0xFF;
 }
 
 # xorhi rt,ra,value
 :xorhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=69 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_RA ^ RI10_I10) & 0xFFFF;
+    RI10_RT = (RI10_RA ^ RI10_I10) & 0xFFFF;
 }
 
 # xori rt,ra,value
 :xori RI10_RT,RI10_RA,RI10_I10 is RI10_OP=68 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = (RI10_RA ^ RI10_I10) & 0xFFFFFFFF;
+    RI10_RT = (RI10_RA ^ RI10_I10) & 0xFFFFFFFF;
 }
 
 # nand rt,ra,rb
 :nand RR_RT,RR_RA,RR_RB is RR_OP=201 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = ~(RR_RA & RR_RB);
+    RR_RT = ~(RR_RA & RR_RB);
 }
 
 # nor rt,ra,rb
 :nor RR_RT,RR_RA,RR_RB is RR_OP=73 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = ~(RR_RA | RR_RB);
+    RR_RT = ~(RR_RA | RR_RB);
 }
 
 # eqv rt,ra,rb
 :eqv RR_RT,RR_RA,RR_RB is RR_OP=585 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = RR_RA ^ (~RR_RB);
+    RR_RT = RR_RA ^ (~RR_RB);
 }
 
 # selb rt,ra,rb,rc
 :selb RRR_RT,RRR_RA,RRR_RB,RRR_RC is RRR_OP=8 & RRR_RT & RRR_RB & RRR_RA & RRR_RC
 {
-	RRR_RT = (RRR_RC & RRR_RB) | ((~RRR_RC) & RRR_RA);
+    RRR_RT = (RRR_RC & RRR_RB) | ((~RRR_RC) & RRR_RA);
 }
 
 define pcodeop __spu_shufb;
@@ -837,53 +849,53 @@ define pcodeop __spu_shlh;
 # shlh rt,ra,rb
 :shlh RR_RT,RR_RA,RR_RB is RR_OP=95 & RR_RB & RR_RA & RR_RT
 {
-	shift_count = RR_RB % 32;
-	if (shift_count > 15) goto <zero_out>;
-	RR_RT = RR_RA << shift_count;
-	goto inst_next;
-	<zero_out>
-	RR_RT = 0;
+    shift_count = RR_RB % 32;
+    if (shift_count > 15) goto <zero_out>;
+    RR_RT = RR_RA << shift_count;
+    goto inst_next;
+    <zero_out>
+    RR_RT = 0;
 }
 
 # shlhi rt,ra,value
 :shlhi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=127 & RI7_RT & RI7_RA & RI7_I7
 {
-	shift_count = RI7_I7 % 32;
-	if (shift_count == 0) goto <copy>;
-	if (shift_count > 15) goto <zero_out>;
-	RI7_RT = RI7_RA << shift_count;
-	goto inst_next;
-	<zero_out>
-	RI7_RT = 0;
-	goto inst_next;
-	<copy>
-	RI7_RT = RI7_RA;
+    shift_count = RI7_I7 % 32;
+    if (shift_count == 0) goto <copy>;
+    if (shift_count > 15) goto <zero_out>;
+    RI7_RT = RI7_RA << shift_count;
+    goto inst_next;
+    <zero_out>
+    RI7_RT = 0;
+    goto inst_next;
+    <copy>
+    RI7_RT = RI7_RA;
 }
 
 # shl rt,ra,rb
 :shl RR_RT,RR_RA,RR_RB is RR_OP=91 & RR_RB & RR_RA & RR_RT
 {
-	shift_count = RR_RB % 64;
-	if (shift_count > 31) goto <zero_out>;
-	RR_RT = RR_RA << shift_count;
-	goto inst_next;
-	<zero_out>
-	RR_RT = 0;
+    shift_count = RR_RB % 64;
+    if (shift_count > 31) goto <zero_out>;
+    RR_RT = RR_RA << shift_count;
+    goto inst_next;
+    <zero_out>
+    RR_RT = 0;
 }
 
 # shli rt,ra,value
 :shli RI7_RT,RI7_RA,RI7_I7 is RI7_OP=123 & RI7_RT & RI7_RA & RI7_I7
 {
-	shift_count = RI7_I7 % 64;
-	if (shift_count == 0) goto <copy>;
-	if (shift_count > 31) goto <zero_out>;
-	RI7_RT = RI7_RA << shift_count;
-	goto inst_next;
-	<zero_out>
-	RI7_RT = 0;
-	goto inst_next;
-	<copy>
-	RI7_RT = RI7_RA;
+    shift_count = RI7_I7 % 64;
+    if (shift_count == 0) goto <copy>;
+    if (shift_count > 31) goto <zero_out>;
+    RI7_RT = RI7_RA << shift_count;
+    goto inst_next;
+    <zero_out>
+    RI7_RT = 0;
+    goto inst_next;
+    <copy>
+    RI7_RT = RI7_RA;
 }
 
 define pcodeop __spu_shlqbi;
@@ -891,7 +903,7 @@ define pcodeop __spu_shlqbi;
 # shlqbi rt,ra,rb
 :shlqbi RR_RT,RR_RA,RR_RB is RR_OP=475 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_shlqbi(RR_RA, RR_RB);
+    RR_RT = __spu_shlqbi(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_shlqbii;
@@ -899,7 +911,7 @@ define pcodeop __spu_shlqbii;
 # shlqbii rt,ra,value
 :shlqbii RI7_RT,RI7_RA,RI7_I7 is RI7_OP=507 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_shlqbii(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_shlqbii(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_shlqby;
@@ -907,13 +919,13 @@ define pcodeop __spu_shlqby;
 # shlqby rt,ra,rb
 :shlqby RR_RT,RR_RA,RR_RB is RR_OP=479 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_shlqby(RR_RA, RR_RB);
+    RR_RT = __spu_shlqby(RR_RA, RR_RB);
 }
 
 #lr rt,ra
 :lr RI7_RT,RI7_RA is RI7_OP=511 & RI7_RT & RI7_RA & RI7_I7=0
 {
-	RI7_RT = RI7_RA;
+    RI7_RT = RI7_RA;
 }
 
 define pcodeop __spu_shlqbyi;
@@ -921,7 +933,7 @@ define pcodeop __spu_shlqbyi;
 # shlqbyi rt,ra,value
 :shlqbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=511 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_shlqbyi(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_shlqbyi(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_shlqbybi;
@@ -929,7 +941,7 @@ define pcodeop __spu_shlqbybi;
 # shlqbybi rt,ra,rb
 :shlqbybi RR_RT,RR_RA,RR_RB is RR_OP=463 & RR_RB & RR_RA & RR_RT
 {
-	RR_RT = __spu_shlqbybi(RR_RA, RR_RB);
+    RR_RT = __spu_shlqbybi(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_roth;
@@ -937,7 +949,7 @@ define pcodeop __spu_roth;
 # roth rt,ra,rb
 :roth RR_RT,RR_RA,RR_RB is RR_OP=92 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_roth(RR_RA, RR_RB);
+    RR_RT = __spu_roth(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rothi;
@@ -945,7 +957,7 @@ define pcodeop __spu_rothi;
 # rothi rt,ra,value
 :rothi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=124 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rothi(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_rothi(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_rot;
@@ -953,15 +965,15 @@ define pcodeop __spu_rot;
 # rot rt,ra,rb
 :rot RR_RT,RR_RA,RR_RB is RR_OP=88 & RR_RT & RR_RA & RR_RB
 {
-	rotby = RR_RB & 0x1F;
-	RR_RT = (RR_RA << rotby) | (RR_RA >> (32 - rotby));
+    rotby = RR_RB & 0x1F;
+    RR_RT = (RR_RA << rotby) | (RR_RA >> (32 - rotby));
 }
 
 # roti rt,ra,value
 :roti RI7_RT,RI7_RA,RI7_I7 is RI7_OP=120 & RI7_RT & RI7_RA & RI7_I7
 {
-	rotby = RI7_I7 & 0x1F;
-	RI7_RT = (RI7_RA << rotby) | (RI7_RA >> (32 - rotby));
+    rotby = RI7_I7 & 0x1F;
+    RI7_RT = (RI7_RA << rotby) | (RI7_RA >> (32 - rotby));
 }
 
 define pcodeop __spu_rotqby;
@@ -969,7 +981,7 @@ define pcodeop __spu_rotqby;
 # rotqby rt,ra,rb
 :rotqby RR_RT,RR_RA,RR_RB is RR_OP=476 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rotqby(RR_RA, RR_RB);
+    RR_RT = __spu_rotqby(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rotqbyi;
@@ -977,7 +989,7 @@ define pcodeop __spu_rotqbyi;
 # rotqbyi rt,ra,value
 :rotqbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=508 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotqbyi(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_rotqbyi(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_rotqbybi;
@@ -985,7 +997,7 @@ define pcodeop __spu_rotqbybi;
 # rotqbybi rt,ra,rb
 :rotqbybi RR_RT,RR_RA,RR_RB is RR_OP=460 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rotqbybi(RR_RA, RR_RB);
+    RR_RT = __spu_rotqbybi(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rotqbi;
@@ -993,7 +1005,7 @@ define pcodeop __spu_rotqbi;
 # rotqbi rt,ra,value
 :rotqbi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=472 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotqbi(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_rotqbi(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_rotqbii;
@@ -1001,7 +1013,7 @@ define pcodeop __spu_rotqbii;
 # rotqbii rt,ra,rb
 :rotqbii RR_RT,RR_RA,RR_RB is RR_OP=504 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rotqbii(RR_RA, RR_RB);
+    RR_RT = __spu_rotqbii(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rothm;
@@ -1009,18 +1021,18 @@ define pcodeop __spu_rothm;
 # rothm rt,ra,rb
 :rothm RR_RT,RR_RA,RR_RB is RR_OP=93 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rothm(RR_RA, RR_RB);
+    RR_RT = __spu_rothm(RR_RA, RR_RB);
 }
 
 # rothmi rt,ra,value
 :rothmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=125 & RI7_RT & RI7_RA & RI7_I7
 {
-	shift_count = (0 - RI7_I7) % 32;
-	if (shift_count < 16) goto <shift_right>;
-	RI7_RT = 0;
-	goto inst_next;
-	<shift_right>
-	RI7_RT = RI7_RA >> shift_count;
+    shift_count = (0 - RI7_I7) % 32;
+    if (shift_count < 16) goto <shift_right>;
+    RI7_RT = 0;
+    goto inst_next;
+    <shift_right>
+    RI7_RT = RI7_RA >> shift_count;
 }
 
 define pcodeop __spu_rotm;
@@ -1028,18 +1040,18 @@ define pcodeop __spu_rotm;
 # rotm rt,ra,rb
 :rotm RR_RT,RR_RA,RR_RB is RR_OP=89 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rotm(RR_RA, RR_RB);
+    RR_RT = __spu_rotm(RR_RA, RR_RB);
 }
 
 # rotmi rt,ra,value
 :rotmi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=121 & RI7_RT & RI7_RA & RI7_I7
 {
-	shift_count = (0 - RI7_I7) % 64;
-	if (shift_count < 32) goto <shift_right>;
-	RI7_RT = 0;
-	goto inst_next;
-	<shift_right>
-	RI7_RT = RI7_RA >> shift_count;
+    shift_count = (0 - RI7_I7) % 64;
+    if (shift_count < 32) goto <shift_right>;
+    RI7_RT = 0;
+    goto inst_next;
+    <shift_right>
+    RI7_RT = RI7_RA >> shift_count;
 }
 
 define pcodeop __spu_rotqmby;
@@ -1047,7 +1059,7 @@ define pcodeop __spu_rotqmby;
 # rotqmby rt,ra,rb
 :rotqmby RR_RT,RR_RA,RR_RB is RR_OP=477 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rotqmby(RR_RA, RR_RB);
+    RR_RT = __spu_rotqmby(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rotqmbyi;
@@ -1055,7 +1067,7 @@ define pcodeop __spu_rotqmbyi;
 # rotqmbyi rt,ra,value
 :rotqmbyi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=509 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotqmbyi(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_rotqmbyi(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_rotqmbybi;
@@ -1063,7 +1075,7 @@ define pcodeop __spu_rotqmbybi;
 # rotqmbybi rt,ra,rb
 :rotqmbybi RR_RT,RR_RA,RR_RB is RR_OP=461 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rotqmbybi(RR_RA, RR_RB);
+    RR_RT = __spu_rotqmbybi(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rotqmbi;
@@ -1071,7 +1083,7 @@ define pcodeop __spu_rotqmbi;
 # rotqmbi rt,ra,value
 :rotqmbi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=473 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotqmbi(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_rotqmbi(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_rotqmbii;
@@ -1079,7 +1091,7 @@ define pcodeop __spu_rotqmbii;
 # rotqmbii rt,ra,value
 :rotqmbii RI7_RT,RI7_RA,RI7_I7 is RI7_OP=505 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotqmbii(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_rotqmbii(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_rotmah;
@@ -1087,7 +1099,7 @@ define pcodeop __spu_rotmah;
 # rotmah rt,ra,rb
 :rotmah RR_RT,RR_RA,RR_RB is RR_OP=94 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rotmah(RR_RA, RR_RB);
+    RR_RT = __spu_rotmah(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rotmahi;
@@ -1095,7 +1107,7 @@ define pcodeop __spu_rotmahi;
 # rotmahi rt,ra,value
 :rotmahi RI7_RT,RI7_RA,RI7_I7 is RI7_OP=126 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotmahi(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_rotmahi(RI7_RA, RI7_I7:4);
 }
 
 define pcodeop __spu_rotma;
@@ -1103,7 +1115,7 @@ define pcodeop __spu_rotma;
 # rotma rt,ra,rb
 :rotma RR_RT,RR_RA,RR_RB is RR_OP=90 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_rotma(RR_RA, RR_RB);
+    RR_RT = __spu_rotma(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_rotmai;
@@ -1111,7 +1123,7 @@ define pcodeop __spu_rotmai;
 # rotmai rt,ra,value
 :rotmai RI7_RT,RI7_RA,RI7_I7 is RI7_OP=122 & RI7_RT & RI7_RA & RI7_I7
 {
-	RI7_RT = __spu_rotmai(RI7_RA, RI7_I7:4);
+    RI7_RT = __spu_rotmai(RI7_RA, RI7_I7:4);
 }
 
 
@@ -1125,7 +1137,7 @@ define pcodeop __spu_heq;
 # heq ra,rb
 :heq RR_RA,RR_RB is RR_OP=984 & RR_RT & RR_RA & RR_RB
 {
-	__spu_heq(RR_RA, RR_RB);
+    __spu_heq(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_heqi;
@@ -1133,7 +1145,7 @@ define pcodeop __spu_heqi;
 # heqi ra,value
 :heqi RI10_RA,RI10_I10 is RI10_OP=127 & RI10_RT & RI10_RA & RI10_I10
 {
-	__spu_heqi(RI10_RA, RI10_I10:4);
+    __spu_heqi(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_hgt;
@@ -1141,7 +1153,7 @@ define pcodeop __spu_hgt;
 # hgt ra,rb
 :hgt RR_RA,RR_RB is RR_OP=600 & RR_RT & RR_RA & RR_RB
 {
-	__spu_hgt(RR_RA, RR_RB);
+    __spu_hgt(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_hgti;
@@ -1149,7 +1161,7 @@ define pcodeop __spu_hgti;
 # hgti ra,value
 :hgti RI10_RA,RI10_I10 is RI10_OP=79 & RI10_RT & RI10_RA & RI10_I10
 {
-	__spu_hgti(RI10_RA, RI10_I10:4);
+    __spu_hgti(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_hlgt;
@@ -1157,7 +1169,7 @@ define pcodeop __spu_hlgt;
 # hlgt ra,rb
 :hlgt RR_RA,RR_RB is RR_OP=728 & RR_RT & RR_RA & RR_RB
 {
-	__spu_hlgt(RR_RA, RR_RB);
+    __spu_hlgt(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_hlgti;
@@ -1165,7 +1177,7 @@ define pcodeop __spu_hlgti;
 # hlgti ra,value
 :hlgti RI10_RA,RI10_I10 is RI10_OP=95 & RI10_RT & RI10_RA & RI10_I10
 {
-	__spu_hlgti(RI10_RA, RI10_I10:4);
+    __spu_hlgti(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_ceqb;
@@ -1173,11 +1185,11 @@ define pcodeop __spu_ceqb;
 # ceqb rt,ra,rb
 :ceqb RR_RT,RR_RA,RR_RB is RR_OP=976 & RR_RT & RR_RA & RR_RB
 {
-	if (RR_RA == RR_RB) goto <true>;
-	RR_RT = 0;
-	goto inst_next;
-	<true>
-	RR_RT = 0xFF;
+    if (RR_RA == RR_RB) goto <true>;
+    RR_RT = 0;
+    goto inst_next;
+    <true>
+    RR_RT = 0xFF;
 }
 
 define pcodeop __spu_ceqbi;
@@ -1185,7 +1197,7 @@ define pcodeop __spu_ceqbi;
 # ceqbi rt,ra,value
 :ceqbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=126 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_ceqbi(RI10_RA, RI10_I10:4);
+    RI10_RT = __spu_ceqbi(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_ceqh;
@@ -1193,7 +1205,7 @@ define pcodeop __spu_ceqh;
 # ceqh rt,ra,rb
 :ceqh RR_RT,RR_RA,RR_RB is RR_OP=968 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_ceqh(RR_RA, RR_RB);
+    RR_RT = __spu_ceqh(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_ceqhi;
@@ -1201,7 +1213,7 @@ define pcodeop __spu_ceqhi;
 # ceqhi rt,ra,value
 :ceqhi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=125 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_ceqhi(RI10_RA, RI10_I10:4);
+    RI10_RT = __spu_ceqhi(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_ceq;
@@ -1209,11 +1221,11 @@ define pcodeop __spu_ceq;
 # ceq rt,ra,rb
 :ceq RR_RT,RR_RA,RR_RB is RR_OP=960 & RR_RT & RR_RA & RR_RB
 {
-	if (RR_RA == RR_RB) goto <true>;
-	RR_RT = 0;
-	goto inst_next;
-	<true>
-	RR_RT = 0xFFFFFFFF;
+    if (RR_RA == RR_RB) goto <true>;
+    RR_RT = 0;
+    goto inst_next;
+    <true>
+    RR_RT = 0xFFFFFFFF;
 }
 
 define pcodeop __spu_ceqi;
@@ -1221,11 +1233,11 @@ define pcodeop __spu_ceqi;
 # ceqi rt,ra,value
 :ceqi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=124 & RI10_RT & RI10_RA & RI10_I10
 {
-	if (RI10_RA == RI10_I10) goto <true>;
-	RI10_RT = 0;
-	goto inst_next;
-	<true>
-	RI10_RT = 0xFFFFFFFF;
+    if (RI10_RA == RI10_I10) goto <true>;
+    RI10_RT = 0;
+    goto inst_next;
+    <true>
+    RI10_RT = 0xFFFFFFFF;
 }
 
 define pcodeop __spu_cgtb;
@@ -1233,7 +1245,7 @@ define pcodeop __spu_cgtb;
 # cgtb rt,ra,rb
 :cgtb RR_RT,RR_RA,RR_RB is RR_OP=592 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_cgtb(RR_RA, RR_RB);
+    RR_RT = __spu_cgtb(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_cgtbi;
@@ -1241,7 +1253,7 @@ define pcodeop __spu_cgtbi;
 # cgtbi rt,ra,value
 :cgtbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=78 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_cgtbi(RI10_RA, RI10_I10:4);
+    RI10_RT = __spu_cgtbi(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_cgth;
@@ -1249,7 +1261,7 @@ define pcodeop __spu_cgth;
 # cgth rt,ra,rb
 :cgth RR_RT,RR_RA,RR_RB is RR_OP=584 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_cgth(RR_RA, RR_RB);
+    RR_RT = __spu_cgth(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_cgthi;
@@ -1257,7 +1269,7 @@ define pcodeop __spu_cgthi;
 # cgthi rt,ra,value
 :cgthi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=115 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_cgthi(RI10_RA, RI10_I10:4);
+    RI10_RT = __spu_cgthi(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_cgt;
@@ -1266,11 +1278,11 @@ define pcodeop __spu_cgt;
 # cgt rt,ra,rb
 :cgt RR_RT,RR_RA,RR_RB is RR_OP=576 & RR_RT & RR_RA & RR_RB
 {
-	if (RR_RA s> RR_RB) goto <true>;
-	RR_RT = 0;
-	goto inst_next;
-	<true>
-	RR_RT = 0xFFFFFFFF;
+    if (RR_RA s> RR_RB) goto <true>;
+    RR_RT = 0;
+    goto inst_next;
+    <true>
+    RR_RT = 0xFFFFFFFF;
 }
 
 define pcodeop __spu_cgti;
@@ -1278,11 +1290,11 @@ define pcodeop __spu_cgti;
 # cgti rt,ra,value
 :cgti RI10_RT,RI10_RA,RI10_I10 is RI10_OP=76 & RI10_RT & RI10_RA & RI10_I10
 {
-	if (RI10_RA s> RI10_I10) goto <true>;
-	RI10_RT = 0;
-	goto inst_next;
-	<true>
-	RI10_RT = 0xFFFFFFFF;
+    if (RI10_RA s> RI10_I10) goto <true>;
+    RI10_RT = 0;
+    goto inst_next;
+    <true>
+    RI10_RT = 0xFFFFFFFF;
 }
 
 define pcodeop __spu_clgtb;
@@ -1290,20 +1302,20 @@ define pcodeop __spu_clgtb;
 # clgtb rt,ra,rb
 :clgtb RR_RT,RR_RA,RR_RB is RR_OP=720 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_clgtb(RR_RA, RR_RB);
+    RR_RT = __spu_clgtb(RR_RA, RR_RB);
 }
 
-#	mask = 0xFF;
-#	shift_amount = 0;
-#	if ((RR_RA & mask) > (RR_RB & mask)) goto <set_true>;
-#	RR_RT = (RR_RT & ~mask);
-#	goto <set_mask>;
-#	<set_true>
-#	RR_RT = (RR_RT | mask);
-#	<set_mask>
-#	shift_amount = shift_amount + 8;
-#	mask = mask << shift_amount;
-#	(This needs to loop 16 times to have it perform the function for all 16 bytes in the 128-bit registers)
+#    mask = 0xFF;
+#    shift_amount = 0;
+#    if ((RR_RA & mask) > (RR_RB & mask)) goto <set_true>;
+#    RR_RT = (RR_RT & ~mask);
+#    goto <set_mask>;
+#    <set_true>
+#    RR_RT = (RR_RT | mask);
+#    <set_mask>
+#    shift_amount = shift_amount + 8;
+#    mask = mask << shift_amount;
+#    (This needs to loop 16 times to have it perform the function for all 16 bytes in the 128-bit registers)
 
 
 
@@ -1312,7 +1324,7 @@ define pcodeop __spu_clgtbi;
 # clgtbi rt,ra,value
 :clgtbi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=94 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_clgtbi(RI10_RA, RI10_I10:4);
+    RI10_RT = __spu_clgtbi(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_clgth;
@@ -1320,7 +1332,7 @@ define pcodeop __spu_clgth;
 # clgth rt,ra,rb
 :clgth RR_RT,RR_RA,RR_RB is RR_OP=712 & RR_RT & RR_RA & RR_RB
 {
-	RR_RT = __spu_clgth(RR_RA, RR_RB);
+    RR_RT = __spu_clgth(RR_RA, RR_RB);
 }
 
 define pcodeop __spu_clgthi;
@@ -1328,7 +1340,7 @@ define pcodeop __spu_clgthi;
 # clgthi rt,ra,value
 :clgthi RI10_RT,RI10_RA,RI10_I10 is RI10_OP=93 & RI10_RT & RI10_RA & RI10_I10
 {
-	RI10_RT = __spu_clgthi(RI10_RA, RI10_I10:4);
+    RI10_RT = __spu_clgthi(RI10_RA, RI10_I10:4);
 }
 
 define pcodeop __spu_clgt;
@@ -1336,11 +1348,11 @@ define pcodeop __spu_clgt;
 # clgt rt,ra,rb
 :clgt RR_RT,RR_RA,RR_RB is RR_OP=704 & RR_RT & RR_RA & RR_RB
 {
-	if (RR_RA > RR_RB) goto <true>;
-	RR_RT = 0;
-	goto inst_next;
-	<true>
-	RR_RT = 0xFFFFFFFF;
+    if (RR_RA > RR_RB) goto <true>;
+    RR_RT = 0;
+    goto inst_next;
+    <true>
+    RR_RT = 0xFFFFFFFF;
 }
 
 define pcodeop __spu_clgti;
@@ -1348,11 +1360,11 @@ define pcodeop __spu_clgti;
 # clgti rt,ra,value
 :clgti RI10_RT,RI10_RA,RI10_I10 is RI10_OP=92 & RI10_RT & RI10_RA & RI10_I10
 {
-	if (RI10_RA > RI10_I10) goto <true>;
-	RI10_RT = 0;
-	goto inst_next;
-	<true>
-	RI10_RT = 0xFFFFFFFF;
+    if (RI10_RA > RI10_I10) goto <true>;
+    RI10_RT = 0;
+    goto inst_next;
+    <true>
+    RI10_RT = 0xFFFFFFFF;
 }
 
 # br symbol
@@ -1367,18 +1379,44 @@ define pcodeop __spu_clgti;
     goto targetAddress;
 }
 
+# brsl lr,symbol
+:brsl targetAddress is RI16_OP=102 & RI16_I16 & RI16_RT=0 & targetAddress
+{
+    lr = inst_next;
+    target = zext(targetAddress);
+    if (target != inst_next && target != (inst_next - 4))
+        goto <call_dst>;
+    pc = target;
+    goto targetAddress;
+    <call_dst>
+    call targetAddress;
+}
+
 # brsl rt,symbol
 :brsl RI16_RT,targetAddress is RI16_OP=102 & RI16_I16 & RI16_RT & targetAddress
 {
     RI16_RT = inst_next;
-    call targetAddress;
+    goto targetAddress;
+}
+
+# brasl lr,symbol
+:brasl absoluteAddress is RI16_OP=98 & RI16_I16 & RI16_RT=0 & absoluteAddress
+{
+    lr = inst_next;
+    target = zext(absoluteAddress);
+    if (target != inst_next && target != (inst_next - 4))
+        goto <call_dst>;
+    pc = target;
+    goto absoluteAddress;
+    <call_dst>
+    call absoluteAddress;
 }
 
 # brasl rt,symbol
 :brasl RI16_RT,absoluteAddress is RI16_OP=98 & RI16_I16 & RI16_RT & absoluteAddress
 {
     RI16_RT = inst_next;
-    call absoluteAddress;
+    goto absoluteAddress;
 }
 
 # bi lr
@@ -1398,7 +1436,7 @@ define pcodeop __spu_iret;
 # iret ra
 :iret RR_RA is RR_OP=600 & RR_RB & RR_RA & RR_RT=0
 {
-	__spu_iret(RR_RA);
+    __spu_iret(RR_RA);
 }
 
 define pcodeop __spu_bisled;
@@ -1409,12 +1447,27 @@ define pcodeop __spu_bisled;
     __spu_bisled(RI7_RT, RI7_RA:4);
 }
 
-define pcodeop __spu_bisl;
+# bisl lr,ra
+:bisl RI7_RA is RI7_OP=425 & RI7_RA & RI7_RT=0
+{
+    local branch_dst = RI7_RA;
+    lr = inst_next;
+
+    if (branch_dst != inst_next && branch_dst != (inst_next - 4))
+        goto <call_dst>;
+    pc =branch_dst;
+    goto [branch_dst];
+    <call_dst>
+    call [branch_dst];
+}
 
 # bisl rt,ra
 :bisl RI7_RT,RI7_RA is RI7_OP=425 & RI7_RT & RI7_RA
 {
-    __spu_bisl(RI7_RT, RI7_RA:4);
+    local branch_dst = RI7_RA;
+    RI7_RT = inst_next;
+    pc =branch_dst;
+    goto [branch_dst];
 }
 
 # brnz rt,symbol
@@ -1710,7 +1763,7 @@ define pcodeop __spu_stop;
 # stop
 :stop STOP_OP is RR_OP=0 & RR_RB=0 & STOP_OP
 {
-	__spu_stop(STOP_OP:4);
+    __spu_stop(STOP_OP:4);
 }
 
 define pcodeop __spu_stopd;
@@ -1718,8 +1771,8 @@ define pcodeop __spu_stopd;
 # stopd
 :stopd is RR_OP=320
 {
-	#TODO
-	__spu_stopd();
+    #TODO
+    __spu_stopd();
 }
 
 # lnop
@@ -1737,7 +1790,7 @@ define pcodeop __spu_sync;
 # sync
 :sync SYNC_C is RR_OP=2 & SYNC_C
 {
-	__spu_sync((SYNC_C:4) & 1);
+    __spu_sync((SYNC_C:4) & 1);
 }
 
 define pcodeop __spu_dsync;
@@ -1745,7 +1798,7 @@ define pcodeop __spu_dsync;
 # dsync
 :dsync is RR_OP=3
 {
-	__spu_dsync();	
+    __spu_dsync();
 }
 
 #mfspr
